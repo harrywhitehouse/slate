@@ -15,7 +15,7 @@ search: true
 
 # Introduction
 
-The RedBrick247 API (RBAPI) allows developers to integrate shipping labels and fullfillment within their e-commerce businesses and online marketplaces. The RBAPI offers price comparison, label printing, manifest generation, transactions details and tracking features. The guideline below will help get you started. For additional help, please email us at [support@redbrick247.com](mailto:support@redbrick247.com).
+The RedBrick247 API allows developers to integrate shipping labels and fullfillment within their e-commerce businesses and online marketplaces. The API offers price comparison, label printing, manifest generation, transactions details and tracking features. The guideline below will help get you started. For additional help, please email us at [support@redbrick247.com](mailto:support@redbrick247.com).
 
 ## Create Account
 
@@ -23,23 +23,23 @@ To create an account, please visit [www.redbrick247.com](https://www.redbrick247
 
 ## Sandbox and Production
 
-The Sandbox environment will help you get started, test your requests and the RBAPI responses before you generate Production labels. You cannot induct mailpieces into the mailstream using labels generated in the Sandbox environment. There are no additional charges associated with requests in the Sandbox environment. When you are ready to generate live labels, switch the RBAPI Sandbox URL with the RBAPI Production URL. The requests (including headers) do not change.
+The Sandbox environment will help you get started, test your requests and the API responses before you generate Production labels. You cannot induct mailpieces into the mailstream using labels generated in the Sandbox environment. There are no additional charges associated with requests in the Sandbox environment. When you are ready to generate live labels, switch the API Sandbox URL with the API Production URL. The requests (including headers) do not change.
 
 ## Endpoints
 
 <aside class="notice">
-Sandbox: https://rbapi.sandbox.redbrick247.com/v1
+Sandbox: https://api.sandbox.redbrick247.com/v1
 </aside>
 
 <aside class="notice">
-Production: https://rbapi.redbrick247.com/v1
+Production: https://api.redbrick247.com/v1
 </aside>
 
 ## RESTful API
 
-The RBAPI is a RESTful API that supports JSON requests and responses. HATEOAS is not supported. This documentation provides code samples and libraries for different platforms to help you get started.
+The API is a RESTful API that supports JSON requests and responses. HATEOAS is not supported. This documentation provides code samples and libraries for different platforms to help you get started.
 
-Requests must include "Content-Type: application/json" in the headers. Successful responses return HTTP status code 200 and 201. Depending on the request, responses return a JSON body or not. Unsuccessful responses return HTTP status codes 4XX and 5XX with additional error details (code and message). Click [here](#errors) for details on the RBAPI errors.
+Requests must include "Content-Type: application/json" in the headers. Successful responses return HTTP status code 200 and 201. Depending on the request, responses return a JSON body or not. Unsuccessful responses return HTTP status codes 4XX and 5XX with additional error details (code and message). Click [here](#errors) for details on the API errors.
 
 ## Versioning
 
@@ -47,15 +47,15 @@ The API version is specified in the endpoint URL. The current API version is v1.
 
 ## Authentication
 
-All RBAPI must be authenticated. RBAPI uses basic HTTP authentication to authenticate user requests. The username and the password are the email and the password associated with the user's account created on the RedBrick247 website (www.redbrick247.com).
+All API calls must be authenticated. API uses basic HTTP authentication to authenticate user requests. The username and the password are the email and the password associated with the user's account created on the RedBrick247 website (www.redbrick247.com).
 
 ## Request-Response Structure and Multiple Carriers
 
-The structure of the RBAPI has been designed to support multiple carriers, and to easily allow developers to switch between carriers while keeping common sections unchanged. For example, the address and dimensions sections are universal and their structure wouldn't change between carrier A and carrier B. Carrier specific data is passed in carrier specific attributes. For example, a USPS shipping label which includes signature confirmation is included in the usps attribute ("usps" : { ..., "services" : ["SignatureConfirmation"] }).
+The structure of the API has been designed to support multiple carriers, and to easily allow developers to switch between carriers while keeping common sections unchanged. For example, the address and dimensions sections are universal and their structure wouldn't change between carrier A and carrier B. Carrier specific data is passed in carrier specific attributes. For example, a USPS shipping label which includes signature confirmation is included in the usps attribute ("usps" : { ..., "services" : ["SignatureConfirmation"] }).
 
 Responses follow the same structure. Shipping metadata which is carrier specific is returned in carrier specific attributes.
 
-Currently the RBAPI supports the following carriers: USPS.
+Currently the API supports the following carriers: USPS.
 
 # Labels
 
@@ -92,7 +92,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
       \"SignatureConfirmation\"
     ]
   }
-}" "https://rbapi.redbrick247.com/v1/labels"
+}" "https://api.redbrick247.com/v1/labels"
 ```
 
 > The above command returns JSON structured like this:
@@ -116,7 +116,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
 
 ### HTTP Request
 
-`POST https://rbapi.redbrick247.com/v1/labels`
+`POST https://api.redbrick247.com/v1/labels`
 
 ### Query Parameters
 
@@ -221,7 +221,7 @@ origin_country_code | US | Origin country code.
 ## Get (Reprint) a Shipping Label
 
 ```shell
-curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://rbapi.redbrick247.com/v1/labels/9210890188666700000058"
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/labels/9210890188666700000058"
 ```
 
 > The above command returns JSON structured like this:
@@ -245,7 +245,7 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 ### HTTP Request
 
-`GET https://rbapi.redbrick247.com/v1/labels/[tracking_number]`
+`GET https://api.redbrick247.com/v1/labels/[tracking_number]`
 
 ### Query Parameters
 
@@ -256,14 +256,14 @@ tracking_number | (required) | Tracking number.
 ## Delete (Void) a Shipping Label
 
 ```shell
-curl -u user@email.com:password -X DELETE --header "Content-Type: application/json" --header "Accept: application/json" "https://rbapi.redbrick247.com/v1/labels/9210890188666700000058"
+curl -u user@email.com:password -X DELETE --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/labels/9210890188666700000058"
 ```
 
 > The above command does not return any JSON.
 
 ### HTTP Request
 
-`DELETE https://rbapi.redbrick247.com/v1/labels/[tracking_number]`
+`DELETE https://api.redbrick247.com/v1/labels/[tracking_number]`
 
 ### Query Parameters
 
@@ -274,7 +274,7 @@ tracking_number | (required) | Tracking number.
 ## Get Shipping Labels
 
 ```shell
-curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://rbapi.redbrick247.com/v1/labels?start_date=011016&end_date=171016"
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/labels?start_date=011016&end_date=171016"
 ```
 
 > The above command returns JSON structured like this:
@@ -312,7 +312,7 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 ### HTTP Request
 
-`GET https://rbapi.redbrick247.com/v1/labels?start_date=[start_date]&end_date=[end_date]`
+`GET https://api.redbrick247.com/v1/labels?start_date=[start_date]&end_date=[end_date]`
 
 ### Query Parameters
 
@@ -354,7 +354,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
       \"SignatureConfirmation\"
     ]
   }
-}" "https://rbapi.redbrick247.com/v1/price"
+}" "https://api.redbrick247.com/v1/price"
 ```
 
 > The above command returns JSON structured like this:
@@ -374,7 +374,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
 
 ### HTTP Request
 
-`POST https://rbapi.redbrick247.com/v1/price`
+`POST https://api.redbrick247.com/v1/price`
 
 ### Query Parameters
 
@@ -414,7 +414,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
   \"image_format\": \"png\",
   \"image_resolution\" : 300,
   \"usps\": { }
-}" "https://rbapi.redbrick247.com/v1/manifests"
+}" "https://api.redbrick247.com/v1/manifests"
 ```
 
 > The above command returns JSON structured like this:
@@ -438,7 +438,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
 
 ### HTTP Request
 
-`POST https://rbapi.redbrick247.com/v1/manifests`
+`POST https://api.redbrick247.com/v1/manifests`
 
 ### Query Parameters
 
@@ -460,7 +460,7 @@ tracking_numbers | (null/empty) | Tracking numbers collection to be included in 
 ## Get (Reprint) a Manifest
 
 ```shell
-curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://rbapi.redbrick247.com/v1/manifests/9210890188666700000058"
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/manifests/9210890188666700000058"
 ```
 
 > The above command returns JSON structured like this:
@@ -484,7 +484,7 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 ### HTTP Request
 
-`GET https://rbapi.redbrick247.com/v1/manifests/[tracking_number]`
+`GET https://api.redbrick247.com/v1/manifests/[tracking_number]`
 
 ### Query Parameters
 
@@ -495,7 +495,7 @@ tracking_number | (required) | Tracking number.
 ## Get Manifests
 
 ```shell
-curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://rbapi.redbrick247.com/v1/manifests?start_date=20161001&end_date=20161031"
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/manifests?start_date=20161001&end_date=20161031"
 ```
 
 > The above command returns JSON structured like this:
@@ -529,7 +529,7 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 ### HTTP Request
 
-`GET https://rbapi.redbrick247.com/v1/manifests?start_date=[start_date]&end_date=[end_date]`
+`GET https://api.redbrick247.com/v1/manifests?start_date=[start_date]&end_date=[end_date]`
 
 ### Query Parameters
 
@@ -547,7 +547,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
   \"request_id\": \"SVCXXC009282111\",
   \"mail_class\": \"Priority\",
   \"services\" : [\"COD\"]
-}" "https://rbapi.redbrick247.com/v1/usps_services"
+}" "https://api.redbrick247.com/v1/usps_services"
 ```
 
 > The above command returns JSON structured like this:
@@ -561,7 +561,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
 
 ### HTTP Request
 
-`POST https://rbapi.redbrick247.com/v1/usps_services`
+`POST https://api.redbrick247.com/v1/usps_services`
 
 ### Query Parameters
 
