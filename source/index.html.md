@@ -81,12 +81,12 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
     \"state\": \"NY\",
     \"postal_code\": \"10118\"
   },
-  \"shape\": \"Parcel\",
   \"weight\": 2,
   \"weight_unit\": \"lb\",
   \"image_format\": \"png\",
   \"usps\": {
     \"mail_class\": \"Priority\",
+    \"shape\": \"Parcel\",
     \"image_size\": \"4x6\",
     \"services\": [
       \"SignatureConfirmation\"
@@ -126,7 +126,6 @@ request_id | (null/empty) | Request ID. Used by API developers to match requests
 metadata | (null/empty) | Metadata details like references and rubberstamps. See details [here](#metadata-query-parameters)
 from_address | (required) | From shipping address. See details [here](#address-query-parameters).
 to_address | (required) | To shipping address. See details [here](#address-query-parameters).
-shape | (required) | One of Parcel, Flat, FlatRateEnvelope, LegalFlatRateEnvelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB.
 weight | (required) | Weight.
 weight_unit | (required) | Weight unit. One of oz, lb, g, kg.
 dimensions | (null/empty) | Dimensions. See details [here](#dimensions-query-parameters).
@@ -181,6 +180,7 @@ height | (required) | Height.
 Parameter | Default | Description
 --------- | ------- | -----------
 mail_class | (required) | Mail class. One of Priority, Express, FirstClass, ParcelSelect, ParcelSelectLightweight, LibraryMail, MediaMail, BoundPrintedMatter, FirstClassInternational, PriorityInternational, PriorityExpressInternational.
+shape | (required) | One of Parcel, Flat, FlatRateEnvelope, LegalFlatRateEnvelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB.
 services | (null/empty) | Services. One of OpenAndDistribute, Fragile, Perishable, LiveAnimal, HazMat, CrematedRemains, Certified, Restricted, Adult, COD, SignatureConfirmation, Insurance, Registered, ReturnReceipt, ReturnReceiptElectronic, ReturnReceiptMerchandise, HoldForPickup.
 image_size | 4x6 | Image size.
 po_zip_code | (see Description) | Induction zip code. If not provided, it defaults to the mailpiece from address postal code.
@@ -345,11 +345,11 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
     \"state\": \"NY\",
     \"postal_code\": \"10118\"
   },
-  \"shape\": \"Parcel\",
   \"weight\": 2,
   \"weight_unit\": \"lb\",
   \"usps\": {
     \"mail_class\": \"Priority\",
+    \"shape\": \"Parcel\",
     \"services\": [
       \"SignatureConfirmation\"
     ]
@@ -383,7 +383,6 @@ Parameter | Default | Description
 request_id | (null/empty) | Request ID. Used by API developers to match requests and responses. Echoed back in the request_id tag of the response.
 from_address | (required) | From shipping address. See details [here](#address-query-parameters).
 to_address | (required) | To shipping address. See details [here](#address-query-parameters).
-shape | (required) | One of Parcel, Flat, FlatRateEnvelope, LegalFlatRateEnvelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB.
 weight | (required) | Weight.
 weight_unit | (required) | Weight unit. One of oz, lb, g, kg.
 dimensions | (null/empty) | Dimensions. See details [here](#dimensions-query-parameters).
@@ -398,6 +397,7 @@ usps | (null/empty) | USPS carrier data. See details [here](#usps-price-query-pa
 Parameter | Default | Description
 --------- | ------- | -----------
 mail_class | (required) | Mail class. One of Priority, Express, FirstClass, ParcelSelect, ParcelSelectLightweight, LibraryMail, MediaMail, BoundPrintedMatter, FirstClassInternational, PriorityInternational, PriorityExpressInternational.
+shape | (required) | One of Parcel, Flat, FlatRateEnvelope, LegalFlatRateEnvelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB.
 services | (null/empty) | Services. One of OpenAndDistribute, Fragile, Perishable, LiveAnimal, HazMat, CrematedRemains, Certified, Restricted, Adult, COD, SignatureConfirmation, Insurance, Registered, ReturnReceipt, ReturnReceiptElectronic, ReturnReceiptMerchandise, HoldForPickup.
 po_zip_code | (see Description) | Induction zip code. If not provided, it defaults to the mailpiece from address postal code.
 presort_level | (conditional) | Presort level. Required for Library Mail, Media Mail, Parcel Select Destination Entry and Parcel Select Lightweight. One of None, 5-Digit, 3-Digit, SCF, NDC, MixedNDC, DDU, Basic.
@@ -573,3 +573,216 @@ services | (null/empty) | Services. One of OpenAndDistribute, Fragile, Perishabl
 value | 0 | Package insured value.
 waive_signature | true | Waive signature flag. Used for Express Mail.
 country_code | (null/empty) | Required for international mail classes.
+
+# Address
+
+## Validation
+
+```shell
+curl -u user@email.com:password -X POST --header "Content-Type: application/json" --header "Accept: application/json" -d "{
+  \"line1\" : \"247 High St\", 
+  \"city\" : \"Palo X\",
+  \"state_province\" : \"CA\", 
+  \"postal_code\" : \"94301\"
+}" "https://api.redbrick247.com/v1/address/validate"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "line1" : "247 HIGH ST",
+  "line2" : "",
+  "line3" : "",
+  "last_line" : "PALO ALTO CA 94301-1041",
+  "city" : "PALO ALTO",
+  "state_province" : "CA",
+  "zip5" : "94301",
+  "zip4" : "1041",
+  "dpbc" : "476",
+  "record_type" : "S",
+  "rdi" : "B",
+  "dpv" : "AABB",
+  "dpv_comment" : " ",
+  "carrier_route" : "C001",
+  "address_exists" : " "
+}
+```
+
+### HTTP Request
+
+`POST https://api.redbrick247.com/v1/address/validate`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+company_name | (null/empty) | Company name.
+line1 | (required) | Address line 1.
+line2 | (null/empty) | Address line 2.
+line3 | (null/empty) | Address line 3.
+city | (null/empty) | City.
+state | (null/empty) | State.
+postal_code | (null/empty) | Postal code.
+
+## Resolve Multiple
+
+```shell
+curl -u user@email.com:password -X POST --header "Content-Type: application/json" --header "Accept: application/json" -d "{
+  \"line1\" : \"525 University Ave\",  
+  \"city\" : \"Palo Alto\", 
+  \"state_province\" : \"CA\", 
+  \"postal_code\" : \"94301\"
+}" "https://api.redbrick247.com/v1/address/resolve_multiple"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+  {
+    "primary_high" : "0000000525",
+    "primary_low" : "0000000525",
+    "secondary_high" : "A70",
+    "secondary_low" : "A70",
+    "secondary_name" : "",
+    "street_name" : "UNIVERSITY",
+    "pre_direction" : "",
+    "post_direction" : "",
+    "suffix" : "AVE",
+    "zip_code" : "94301",
+    "addon_low" : "1924",
+    "addon_high" : "1924",
+    "unit" : "STE",
+    "record_type" : "H",
+    "state_abbreviation" : null,
+    "county_number" : "085",
+    "carrier_route" : "C011"
+  },
+  {
+    "primary_high" : "0000000525",
+    "primary_low" : "0000000525",
+    "secondary_high" : "A100",
+    "secondary_low" : "A100",
+    "secondary_name" : "",
+    "street_name" : "UNIVERSITY",
+    "pre_direction" : "",
+    "post_direction" : "",
+    "suffix" : "AVE",
+    "zip_code" : "94301",
+    "addon_low" : "1925",
+    "addon_high" : "1925",
+    "unit" : "STE",
+    "record_type" : "H",
+    "state_abbreviation" : null,
+    "county_number" : "085",
+    "carrier_route" : "C011"
+  },
+  {
+    "primary_high" : "0000000525",
+    "primary_low" : "0000000525",
+    ...
+  },
+  ...
+]
+```
+
+### HTTP Request
+
+`POST https://api.redbrick247.com/v1/address/resolve_multiple`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+line1 | (required) | Address line 1.
+line2 | (null/empty) | Address line 2.
+line3 | (null/empty) | Address line 3.
+city | (null/empty) | City.
+state | (null/empty) | State.
+postal_code | (null/empty) | Postal code.
+
+## Get City
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/address/city?zip5=94301"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "city" : "Palo Alto",
+  "state" : "CA"
+}
+```
+
+### HTTP Request
+
+`GET https://api.redbrick247.com/v1/address/city?zip5=[zip5]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+zip5 | (required) | Zip 5.
+
+## Get Streets
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/address/streets?zip5=94301"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+  "ADDISON AVE",
+  "ALMA ST",
+  "ANTON CT",
+  "ASHBY DR",
+  "BOYCE AVE",
+  "BRYANT CT",
+  "BRYANT ST",
+  "BYRON ST",
+  ...
+]
+```
+
+### HTTP Request
+
+`GET https://api.redbrick247.com/v1/address/streets?zip5=[zip5]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+zip5 | (required) | Zip 5.
+
+## Get Possible Addresses
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/address/possible_addresses?zip5=94301&primary=247&street_name=H"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+  "247 HAMILTON AVE",
+  "247 HAMILTON CT",
+  "247 HIGH ST"
+]
+```
+
+### HTTP Request
+
+`GET https://api.redbrick247.com/v1/address/possible_addresses?zip5=[zip5]&primary=[primary number]&street_name=[street name]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+zip5 | (required) | Zip 5.
+primary number | (required) | Primary street number.
+street name | (null/empty) | Street name. Could be null, incomplete (e.g. "H") or full (e.g. "High")
