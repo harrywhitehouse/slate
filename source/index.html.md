@@ -132,10 +132,11 @@ dimensions | (null/empty) | Dimensions. See details [here](#dimensions-query-par
 dimensions_unit | (required if dimensions provided) | Dimensions unit. One of in, ft, mm, cm, m.
 non_delivery_option | Return | Non-delivery option. One of Abandon, Return.
 postmark_date | (UTC current date time) | UTC postmark date.
-image_format | (required) | Image format. One of png, pdf, svg, zpl.
+image_format | (required) | Image format. One of png, pdf, svg, zpl, gif.
 image_resolution | 300 | Image resolution in DPI. One of 150, 203, 300, 600.
 customs_form | (null/empty) | Customs form for military (APO/FPO/DPO) and international shipping. See details [here](#customs_form-query-parameters).
 usps | (null/empty) | USPS carrier data. See details [here](#usps-label-query-parameters).
+ups | (null/empty) | UPS carrier data. See details [here](#ups-label-query-parameters).
 
 ### metadata Query Parameters
 
@@ -188,6 +189,15 @@ presort_level | (conditional) | Presort level. Required for Library Mail, Media 
 entry_facility | (conditional) | Entry facility. Required for Parcel Select Destination Entry and Parcel Select Lightweight. One of None, DNDC, DSCF, DDU.
 softpack | (conditional) | Boolean softpack indicator. Applies to cubic.
 
+### ups Label Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+service | (required) | Service. One of NextDayAir, 2ndDayAir, Ground, 3DaySelect, NextDayAirSaver, NextDayAirEarly, 2ndDayAirAM, WorldwideExpress, WorldwideExpedited, Standard, WorldwideExpressPlus, Saver.
+packaging_type | (required) | Packaging Type. One of Letter, Package, Tube, Pak, SmallExpressBox, MediumExpressBox, LargeExpressBox.
+cod_package_option | (null/empty) | COD package options. See details [here](#ups-cod_package_option-query-parameters).
+delcon_package_option | (null/empty) | Delivery Confirmation package options. See details [here](#ups-delcon_package_option-query-parameters).
+
 ### customs_form Query Parameters
 
 Parameter | Default | Description
@@ -218,7 +228,24 @@ value | (required) | Value.
 hs_tariff_number | (null/empty) | HTS code.
 origin_country_code | US | Origin country code.
 
+### UPS cod_package_option Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+type | (required) | Type. One of Cash, MoneyOrder, Check.
+value | (required) | Value.
+
+### UPS delcon_package_option Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+type | (required) | Type. One of Regular, SignatureRequired, AdultSignatureRequired.
+
 ## Get (Reprint) a Shipping Label
+
+<aside class="notice">
+  Not available for UPS.
+</aside>
 
 ```shell
 curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/labels/9210890188666700000058"
@@ -391,6 +418,7 @@ non_delivery_option | Return | Non delivery option. One of Abandon, Return.
 postmark_date | (UTC current date time) | UTC postmark date.
 customs_form | (null/empty) | Customs form for military (APO/FPO/DPO) and international shipping. See details [here](#customs_form-query-parameters).
 usps | (null/empty) | USPS carrier data. See details [here](#usps-price-query-parameters).
+ups | (null/empty) | UPS carrier data. See details [here](#ups-price-query-parameters).
 
 ### usps Price Query Parameters
 
@@ -404,7 +432,20 @@ presort_level | (conditional) | Presort level. Required for Library Mail, Media 
 entry_facility | (conditional) | Entry facility. Required for Parcel Select Destination Entry and Parcel Select Lightweight. One of None, DNDC, DSCF, DDU.
 softpack | (conditional) | Boolean softpack indicator. Applies to cubic.
 
+### ups Price Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+service | (required) | Service. One of NextDayAir, 2ndDayAir, Ground, 3DaySelect, NextDayAirSaver, NextDayAirEarly, 2ndDayAirAM, WorldwideExpress, WorldwideExpedited, Standard, WorldwideExpressPlus, Saver.
+packaging_type | (required) | Packaging Type. One of Letter, Package, Tube, Pak, SmallExpressBox, MediumExpressBox, LargeExpressBox.
+cod_package_option | (null/empty) | COD package options. See details [here](#ups-cod_package_option-query-parameters).
+delcon_package_option | (null/empty) | Delivery Confirmation package options. See details [here](#ups-delcon_package_option-query-parameters).
+
 # Manifests
+
+<aside class="notice">
+  Not available for UPS.
+</aside>
 
 ## Create a Manifest
 
