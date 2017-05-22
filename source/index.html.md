@@ -55,7 +55,7 @@ The structure of the API has been designed to support multiple carriers, and to 
 
 Responses follow the same structure. Shipping metadata which is carrier specific is returned in carrier specific attributes.
 
-Currently the API supports the following carriers: USPS.
+Currently the API supports the following carriers: USPS, UPS, FedEx.
 
 # Labels
 
@@ -70,7 +70,8 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
     \"line1\": \"247 High St\",
     \"city\": \"Palo Alto\",
     \"state\": \"CA\",
-    \"postal_code\": \"94301\"
+    \"postal_code\": \"94301\",
+    \"country_code\": \"US\"
   },
   \"to_address\": {
     \"first_name\": \"Ted\",
@@ -79,7 +80,8 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
     \"line2\": \"Suite 7510\",
     \"city\": \"New York\",
     \"state\": \"NY\",
-    \"postal_code\": \"10118\"
+    \"postal_code\": \"10118\",
+    \"country_code\": \"US\"
   },
   \"weight\": 2,
   \"weight_unit\": \"lb\",
@@ -137,6 +139,7 @@ image_resolution | 300 | Image resolution in DPI. One of 150, 203, 300, 600.
 customs_form | (null/empty) | Customs form for military (APO/FPO/DPO) and international shipping. See details [here](#customs_form-query-parameters).
 usps | (null/empty) | USPS carrier data. See details [here](#usps-label-query-parameters).
 ups | (null/empty) | UPS carrier data. See details [here](#ups-label-query-parameters).
+fedex | (null/empty) | FedEx carrier data. See details [here](#fedex-label-query-parameters).
 
 ### metadata Query Parameters
 
@@ -166,7 +169,7 @@ line3 | (null/empty) | Address line 3.
 city | (required) | City.
 state | (conditional) | State. Required for USPS carrier.
 postal_code | (conditional) | Postal code. Zip code for USPS carrier. Required for USPS carrier.
-country_code | (conditional) | Required for international requests.
+country_code | (required) | Iso country code.
 
 ### dimensions Query Parameters
 
@@ -193,10 +196,20 @@ softpack | (conditional) | Boolean softpack indicator. Applies to cubic.
 
 Parameter | Default | Description
 --------- | ------- | -----------
+service | (required) | Service. One of 2Day, 2DayAM, ExpressSaver, Ground, GroundHomeDelivery, FirstOvernight, InternationalEconomy, InternationalFirst, InternationalPriority, PriorityOvernight, StandardOvernight.
+packaging_type | (required) | Packaging Type. One of Box, Envelope, Pak, Tube, Custom.
+dropoff_type | (required) | Dropoff Type. One of RegularPickup, RequestCourier, DropBox, BusinessServiceCenter, Station.
+cod_special_service | (null/empty) | COD special service. See details [here](#ups-cod_package_option-query-parameters).
+signature_special_service | (null/empty) | Signature special service. See details [here](#ups-delcon_package_option-query-parameters).
+
+### fedex Label Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
 service | (required) | Service. One of NextDayAir, 2ndDayAir, Ground, 3DaySelect, NextDayAirSaver, NextDayAirEarly, 2ndDayAirAM, WorldwideExpress, WorldwideExpedited, Standard, WorldwideExpressPlus, Saver.
 packaging_type | (required) | Packaging Type. One of Letter, Package, Tube, Pak, SmallExpressBox, MediumExpressBox, LargeExpressBox.
-cod_package_option | (null/empty) | COD package options. See details [here](#ups-cod_package_option-query-parameters).
-delcon_package_option | (null/empty) | Delivery Confirmation package options. See details [here](#ups-delcon_package_option-query-parameters).
+cod_package_option | (null/empty) | COD package options. See details [here](#fedex-cod_special_service-query-parameters).
+delcon_package_option | (null/empty) | Delivery Confirmation package options. See details [here](#fedex-signature_special_service-query-parameters).
 
 ### customs_form Query Parameters
 
@@ -240,6 +253,19 @@ value | (required) | Value.
 Parameter | Default | Description
 --------- | ------- | -----------
 type | (required) | Type. One of Regular, SignatureRequired, AdultSignatureRequired.
+
+### FedEx cod_special_service Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+value | (required) | Value.
+type | (required) | Type. One of Any, Cash, CompanyCheck, GuaranteedFunds, PersonalCheck.
+
+### FedEx signature_special_service Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+type | (required) | Type. One of Adult, Direct, Indirect, NoSignatureRequired, ServiceDefault.
 
 ## Get (Reprint) a Shipping Label
 
@@ -361,7 +387,8 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
     \"line1\": \"247 High St\",
     \"city\": \"Palo Alto\",
     \"state\": \"CA\",
-    \"postal_code\": \"94301\"
+    \"postal_code\": \"94301\",
+    \"country_code\": \"US\"
   },
   \"to_address\": {
     \"first_name\": \"Ted\",
@@ -370,7 +397,8 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
     \"line2\": \"Suite 7510\",
     \"city\": \"New York\",
     \"state\": \"NY\",
-    \"postal_code\": \"10118\"
+    \"postal_code\": \"10118\",
+    \"country_code\": \"US\"
   },
   \"weight\": 2,
   \"weight_unit\": \"lb\",
@@ -436,7 +464,7 @@ softpack | (conditional) | Boolean softpack indicator. Applies to cubic.
 
 Parameter | Default | Description
 --------- | ------- | -----------
-service | (required) | Service. One of NextDayAir, 2ndDayAir, Ground, 3DaySelect, NextDayAirSaver, NextDayAirEarly, 2ndDayAirAM, WorldwideExpress, WorldwideExpedited, Standard, WorldwideExpressPlus, Saver.
+service | (required) | Service. One of NextDayAir, 2ndDayAir, Ground, 3DaySelect, NextDayAirSaver, NextDayAirEarly, 2ndDayAirAM, WorldwideExpress, WorldwideExpedited, ExpressStandard, WorldwideExpressPlus, WorldwideSaver.
 packaging_type | (required) | Packaging Type. One of Letter, Package, Tube, Pak, SmallExpressBox, MediumExpressBox, LargeExpressBox.
 cod_package_option | (null/empty) | COD package options. See details [here](#ups-cod_package_option-query-parameters).
 delcon_package_option | (null/empty) | Delivery Confirmation package options. See details [here](#ups-delcon_package_option-query-parameters).
@@ -624,7 +652,8 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
   \"line1\" : \"247 High St\", 
   \"city\" : \"Palo X\",
   \"state_province\" : \"CA\", 
-  \"postal_code\" : \"94301\"
+  \"postal_code\" : \"94301\",
+  \"country_code\": \"US\"
 }" "https://api.redbrick247.com/v1/address/validate"
 ```
 
@@ -665,6 +694,7 @@ line3 | (null/empty) | Address line 3.
 city | (null/empty) | City.
 state | (null/empty) | State.
 postal_code | (null/empty) | Postal code.
+country_code | (required) | Iso country code.
 
 ## Resolve Multiple
 
