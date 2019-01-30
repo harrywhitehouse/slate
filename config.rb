@@ -42,3 +42,12 @@ end
 # Deploy Configuration
 # If you want Middleman to listen on a different port, you can set that below
 set :port, 4567
+
+config[:product_name] = 'International Bridge Blue'
+config[:support_email] = 'support@myibservices.com'
+config[:production_website_url] = 'https://blue.myib.com'
+config[:sandbox_website_url] = 'https://blue-sandbox.myib.com'
+config[:production_registration_url] = 'https://blue.myib.com/#/register'
+config[:sandbox_registration_url] = 'https://blue-sandbox.myib.com/#/register'
+config[:sandbox_api_url] = 'https://api-sandbox.myibservices.com/v1'
+config[:production_api_url] = 'https://api.myibservices.com/v1'
