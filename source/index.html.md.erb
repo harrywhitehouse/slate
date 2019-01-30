@@ -1,11 +1,11 @@
 ---
-title: RedBrick247 API
+title: International Bridge Blue API
 
 language_tabs:
   - shell
 
 toc_footers:
-  - <a href='https://www.redbrick247.com/#/register'>Create a RedBrick247 account</a>
+  - <a href='https://blue.myib.com/#/register'>Create an International Bridge Blue account</a>
 
 includes:
   - errors
@@ -15,24 +15,26 @@ search: true
 
 # Introduction
 
-The RedBrick247 API allows developers to integrate shipping labels and fullfillment within their e-commerce businesses and online marketplaces. The API offers price comparison, label printing, manifest generation, transactions details and tracking features. The guideline below will help get you started. For additional help, please email us at [support@redbrick247.com](mailto:support@redbrick247.com).
+The <%= config[:product_name] %> API allows developers to integrate shipping labels and fullfillment within their e-commerce businesses and online marketplaces. The API offers price comparison, label printing, manifest generation, transactions details and tracking features. The guideline below will help get you started. For additional help, please email us at [<%= config[:support_email] %>](mailto:<%= config[:support_email] %>).
 
 ## Create Account
 
-To create an account, please visit [www.redbrick247.com](https://www.redbrick247.com/#/register) and sign up for a free account. You will need to select between an eVS account and an ePostage account. If you are a high volume shipper and/or have USPS credentials (CAPS account, Mailer ID, Permit Number) then select the eVS option. Otherwise select the ePostage option. If you have more questions about account types and how they affect postage discounts, please email us at [support@redbrick247.com](mailto:support@redbrick247.com). During the account signup, you'll need to provide your personal details and payment details. For eVS accounts, you will also need to provide your CAPS account number, Mailer ID and Permit Number. After completing signup, you can start printing labels right away (for eVS accounts, 24 business hours are required for us to verify your credentials with the USPS).
+To create an account, please visit [<%= config[:production_website_url] %>](<%= config[:production_registration_url] %>) and sign up for a free account. You'll use the same email address and password to submit API requests (see below). Before you can start printing live labels, you'll need to provide us with your full mailing address and credit card information.
 
-## Sandbox and Production
+If you are part of an organization that has USPS negotiated rates and/or if you'd like to manage organization users (for pricing and billing), some necessary steps are required. Please email us at [<%= config[:support_email] %>](mailto:<%= config[:support_email] %>).
 
-The Sandbox environment will help you get started, test your requests and the API responses before you generate Production labels. You cannot induct mailpieces into the mailstream using labels generated in the Sandbox environment. There are no additional charges associated with requests in the Sandbox environment. When you are ready to generate live labels, switch the API Sandbox URL with the API Production URL. The requests (including headers) do not change.
+## Sandbox
+
+The Sandbox environment will help you get started, test your requests and the API responses before you generate Production labels. To create an account on the Sandbox environment, please visit [<%= config[:sandbox_website_url] %>](<%= config[:sandbox_registration_url] %>). A full mailing address and credit card information is not required like it is in Production. You cannot induct mailpieces into the mailstream using labels generated in the Sandbox environment. There are no additional charges associated with requests in the Sandbox environment. When you are ready to generate live labels, switch the API Sandbox URL with the API Production URL. The requests (including headers) do not change.
 
 ## Endpoints
 
 <aside class="notice">
-Sandbox: https://api.sandbox.redbrick247.com/v1
+Sandbox: <%= config[:sandbox_api_url] %>
 </aside>
 
 <aside class="notice">
-Production: https://api.redbrick247.com/v1
+Production: <%= config[:production_api_url] %>
 </aside>
 
 ## RESTful API
@@ -47,7 +49,7 @@ The API version is specified in the endpoint URL. The current API version is v1.
 
 ## Authentication
 
-All API calls must be authenticated. API uses basic HTTP authentication to authenticate user requests. The username and the password are the email and the password associated with the user's account created on the RedBrick247 website (www.redbrick247.com).
+All API calls must be authenticated. API uses basic HTTP authentication to authenticate user requests. The username and the password are the email and the password associated with the user's account created on the <%= config[:product_name] %> website (<%= config[:production_website_url] %>).
 
 ## Request-Response Structure and Multiple Carriers
 
@@ -55,7 +57,7 @@ The structure of the API has been designed to support multiple carriers, and to 
 
 Responses follow the same structure. Shipping metadata which is carrier specific is returned in carrier specific attributes.
 
-Currently the API supports the following carriers: USPS, UPS, FedEx.
+Currently the API supports the following carriers: USPS, GSS (program), UPS, FedEx.
 
 # Labels
 
@@ -69,7 +71,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
     \"last_name\": \"Michaels\",
     \"line1\": \"247 High St\",
     \"city\": \"Palo Alto\",
-    \"state\": \"CA\",
+    \"state_province\": \"CA\",
     \"postal_code\": \"94301\",
     \"country_code\": \"US\"
   },
@@ -79,7 +81,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
     \"line1\": \"350 5th Ave\",
     \"line2\": \"Suite 7510\",
     \"city\": \"New York\",
-    \"state\": \"NY\",
+    \"state_province\": \"NY\",
     \"postal_code\": \"10118\",
     \"country_code\": \"US\"
   },
@@ -94,7 +96,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
       \"SignatureConfirmation\"
     ]
   }
-}" "https://api.redbrick247.com/v1/labels"
+}" "<%= config[:production_api_url] %>/labels"
 ```
 
 > The above command returns JSON structured like this:
@@ -103,6 +105,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
 {
   "request_id" : "AQX90000000234",
   "status" : "created",
+  "postmark_date":"2018-03-22T23:37:05-07:00",
   "postage_amount" : 10.44,
   "fees_amount" : 2.35,
   "total_amount" : 12.79,
@@ -118,7 +121,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
 
 ### HTTP Request
 
-`POST https://api.redbrick247.com/v1/labels`
+`POST <%= config[:production_api_url] %>/labels`
 
 ### Query Parameters
 
@@ -138,6 +141,7 @@ image_format | (required) | Image format. One of png, pdf, svg, zpl, gif.
 image_resolution | 300 | Image resolution in DPI. One of 150, 203, 300, 600.
 customs_form | (null/empty) | Customs form for military (APO/FPO/DPO) and international shipping. See details [here](#customs_form-query-parameters).
 usps | (null/empty) | USPS carrier data. See details [here](#usps-label-query-parameters).
+gss | (null/empty) | GSS program data. See details [here](#gss-label-query-parameters).
 ups | (null/empty) | UPS carrier data. See details [here](#ups-label-query-parameters).
 fedex | (null/empty) | FedEx carrier data. See details [here](#fedex-label-query-parameters).
 
@@ -167,7 +171,7 @@ line1 | (required) | Address line 1.
 line2 | (null/empty) | Address line 2.
 line3 | (null/empty) | Address line 3.
 city | (required) | City.
-state | (conditional) | State. Required for USPS carrier.
+state_province | (conditional) | State/province. Required for USPS carrier.
 postal_code | (conditional) | Postal code. Zip code for USPS carrier. Required for USPS carrier.
 country_code | (required) | Iso country code.
 
@@ -191,6 +195,24 @@ po_zip_code | (see Description) | Induction zip code. If not provided, it defaul
 presort_level | (conditional) | Presort level. Required for Library Mail, Media Mail, Parcel Select Destination Entry and Parcel Select Lightweight. One of None, 5-Digit, 3-Digit, SCF, NDC, MixedNDC, DDU, Basic.
 entry_facility | (conditional) | Entry facility. Required for Parcel Select Destination Entry and Parcel Select Lightweight. One of None, DNDC, DSCF, DDU.
 softpack | (conditional) | Boolean softpack indicator. Applies to cubic.
+open_and_distribute | (conditional) | Required when services includes OpenAndDistribute. See details [here](#usps-open_and_distribute-query-parameters).
+
+### USPS open_and_distribute Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+enclosed_mail_class | (required) | Enclosed mail class. One of MixedMail, PriorityMail, ParcelSelectMail, ParcelSelectLightweightMail, LibraryMail, MediaMail, BoundPrintedMatterMail, RetailGround, MarketingMail, ParcelReturnServiceMail, MatterForTheBlindMail.
+enclosed_shape | (required) | Enclosed mailpiece shape. One of Parcels, Letters, Flats.
+facility_type | (required) | Destination processing facility type. One of SCF, DDU, ADC, ASF, NDC.
+ddu_facility_name | (conditional) | Required when facility_type is DDU.
+container | (required) | Container type. One of FullTrayBox, HalfTrayBox, FlatTubeTrayBox, ExtendedManagedMail.
+
+### gss Label Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+mail_class | (required) | Mail class. One of ePacket, PriorityInternational, PriorityExpressInternational, FirstClassInternational, InternationalPriorityAirmail, InternationalSurfaceAirLift.
+location_id | (required) | The location ID as provided by the GSS program.
 
 ### ups Label Query Parameters
 
@@ -239,7 +261,7 @@ weight | (required) | Weight.
 weight_unit | (required) | Weight unit. One of oz, lb, g, kg.
 value | (required) | Value.
 hs_tariff_number | (null/empty) | HTS code.
-origin_country_code | US | Origin country code.
+origin_country_code | US | Origin iso country code.
 
 ### UPS cod_package_option Query Parameters
 
@@ -274,7 +296,7 @@ type | (required) | Type. One of Adult, Direct, Indirect, NoSignatureRequired, S
 </aside>
 
 ```shell
-curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/labels/9210890188666700000058"
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/labels/9210890188666700000058"
 ```
 
 > The above command returns JSON structured like this:
@@ -283,6 +305,7 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 {
   "request_id" : "AQX90000000234",
   "status" : "created",
+  "postmark_date":"2018-03-22T23:37:05-07:00",
   "postage_amount" : 10.44,
   "fees_amount" : 2.35,
   "total_amount" : 12.79,
@@ -298,7 +321,7 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 ### HTTP Request
 
-`GET https://api.redbrick247.com/v1/labels/[tracking_number]`
+`GET <%= config[:production_api_url] %>/labels/[tracking_number]`
 
 ### Query Parameters
 
@@ -309,14 +332,14 @@ tracking_number | (required) | Tracking number.
 ## Delete (Void) a Shipping Label
 
 ```shell
-curl -u user@email.com:password -X DELETE --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/labels/9210890188666700000058"
+curl -u user@email.com:password -X DELETE --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/labels/9210890188666700000058"
 ```
 
 > The above command does not return any JSON.
 
 ### HTTP Request
 
-`DELETE https://api.redbrick247.com/v1/labels/[tracking_number]`
+`DELETE <%= config[:production_api_url] %>/labels/[tracking_number]`
 
 ### Query Parameters
 
@@ -327,7 +350,7 @@ tracking_number | (required) | Tracking number.
 ## Get Shipping Labels
 
 ```shell
-curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/labels?start_date=011016&end_date=171016"
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/labels?start_date=2018-03-21T00:00:00-07:00&end_date=2018-03-23T00:00:00-07:00"
 ```
 
 > The above command returns JSON structured like this:
@@ -337,6 +360,7 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
   {
     "request_id" : "AQX90000000234",
     "status" : "created",
+    "postmark_date":"2018-03-22T23:37:05-07:00",
     "postage_amount" : 10.44,
     "fees_amount" : 2.35,
     "total_amount" : 12.79,
@@ -350,6 +374,7 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
   {
     "request_id": null,
     "status" : "voided",
+    "postmark_date":"2018-03-22T23:37:05-07:00",
     "postage_amount": 5.6,
     "fees_amount": 0,
     "total_amount": 5.6,
@@ -365,14 +390,14 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 ### HTTP Request
 
-`GET https://api.redbrick247.com/v1/labels?start_date=[start_date]&end_date=[end_date]`
+`GET <%= config[:production_api_url] %>/labels?start_date=[start_date]&end_date=[end_date]`
 
 ### Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
-start_date | (required) | Start date. Format: ddmmYY.
-end_date | (required) | End date. Format: ddmmYY.
+start_date | (required) | Start date. UTC format.
+end_date | (required) | End date. UTC format.
 
 # Price
 
@@ -386,7 +411,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
     \"last_name\": \"Michaels\",
     \"line1\": \"247 High St\",
     \"city\": \"Palo Alto\",
-    \"state\": \"CA\",
+    \"state_province\": \"CA\",
     \"postal_code\": \"94301\",
     \"country_code\": \"US\"
   },
@@ -396,7 +421,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
     \"line1\": \"350 5th Ave\",
     \"line2\": \"Suite 7510\",
     \"city\": \"New York\",
-    \"state\": \"NY\",
+    \"state_province\": \"NY\",
     \"postal_code\": \"10118\",
     \"country_code\": \"US\"
   },
@@ -409,7 +434,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
       \"SignatureConfirmation\"
     ]
   }
-}" "https://api.redbrick247.com/v1/price"
+}" "<%= config[:production_api_url] %>/price"
 ```
 
 > The above command returns JSON structured like this:
@@ -429,7 +454,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
 
 ### HTTP Request
 
-`POST https://api.redbrick247.com/v1/price`
+`POST <%= config[:production_api_url] %>/price`
 
 ### Query Parameters
 
@@ -446,6 +471,7 @@ non_delivery_option | Return | Non delivery option. One of Abandon, Return.
 postmark_date | (UTC current date time) | UTC postmark date.
 customs_form | (null/empty) | Customs form for military (APO/FPO/DPO) and international shipping. See details [here](#customs_form-query-parameters).
 usps | (null/empty) | USPS carrier data. See details [here](#usps-price-query-parameters).
+gss | (null/empty) | GSS program data. See details [here](#gss-price-query-parameters).
 ups | (null/empty) | UPS carrier data. See details [here](#ups-price-query-parameters).
 
 ### usps Price Query Parameters
@@ -459,6 +485,13 @@ po_zip_code | (see Description) | Induction zip code. If not provided, it defaul
 presort_level | (conditional) | Presort level. Required for Library Mail, Media Mail, Parcel Select Destination Entry and Parcel Select Lightweight. One of None, 5-Digit, 3-Digit, SCF, NDC, MixedNDC, DDU, Basic.
 entry_facility | (conditional) | Entry facility. Required for Parcel Select Destination Entry and Parcel Select Lightweight. One of None, DNDC, DSCF, DDU.
 softpack | (conditional) | Boolean softpack indicator. Applies to cubic.
+
+### gss Price Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+mail_class | (required) | Mail class. One of ePacket, PriorityInternational, PriorityExpressInternational, FirstClassInternational, InternationalPriorityAirmail, InternationalSurfaceAirLift.
+location_id | (required) | The location ID as provided by the GSS program.
 
 ### ups Price Query Parameters
 
@@ -483,7 +516,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
   \"image_format\": \"png\",
   \"image_resolution\" : 300,
   \"usps\": { }
-}" "https://api.redbrick247.com/v1/manifests"
+}" "<%= config[:production_api_url] %>/manifests"
 ```
 
 > The above command returns JSON structured like this:
@@ -491,23 +524,24 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
 ```json
 {
   "request_id" : "MANX000000000C1",
-  "usps" : 
-  {
-    "manifest_number" : "9275090188665400000024",
-    "priority_count" : 1,
-    "express_count" : 0,
-    "pmi_count" : 0,
-    "emi_count" : 0,
-    "gxg_count" : 0,
-    "other_count" : 0
-  },
-  "base64_manifests" : ["iVBORw0KGgoAAA..."]
+  "usps" : [
+    {
+      "manifest_number" : "9275090188665400000024",
+      "priority_count" : 1,
+      "express_count" : 0,
+      "pmi_count" : 0,
+      "emi_count" : 0,
+      "gxg_count" : 0,
+      "other_count" : 0,
+      "base64_manifest" : "iVBORw0KGgoAAA..."
+    },
+  ]
 }
 ```
 
 ### HTTP Request
 
-`POST https://api.redbrick247.com/v1/manifests`
+`POST <%= config[:production_api_url] %>/manifests`
 
 ### Query Parameters
 
@@ -529,7 +563,7 @@ tracking_numbers | (null/empty) | Tracking numbers collection to be included in 
 ## Get (Reprint) a Manifest
 
 ```shell
-curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/manifests/9210890188666700000058"
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/manifests/9210890188666700000058"
 ```
 
 > The above command returns JSON structured like this:
@@ -537,7 +571,7 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 ```json
 {
   "request_id" : "MANX000000000C1",
-  "usps" : 
+  "usps" :
   {
     "manifest_number" : "9275090188665400000024",
     "priority_count" : 1,
@@ -545,15 +579,15 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
     "pmi_count" : 0,
     "emi_count" : 0,
     "gxg_count" : 0,
-    "other_count" : 0
-  },
-  "base64_manifests" : ["iVBORw0KGgoAAA..."]
+    "other_count" : 0,
+    "base64_manifest" : "iVBORw0KGgoAAA..."
+  }
 }
 ```
 
 ### HTTP Request
 
-`GET https://api.redbrick247.com/v1/manifests/[tracking_number]`
+`GET <%= config[:production_api_url] %>/manifests/[tracking_number]`
 
 ### Query Parameters
 
@@ -564,7 +598,7 @@ tracking_number | (required) | Tracking number.
 ## Get Manifests
 
 ```shell
-curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/manifests?start_date=20161001&end_date=20161031"
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/manifests?start_date=2018-03-21T00:00:00-07:00&end_date=2018-03-21T00:00:00-07:00"
 ```
 
 > The above command returns JSON structured like this:
@@ -572,40 +606,44 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 ```json
 [
   {
-    "usps": {
-      "manifest_number": "9275090188665400000017",
-      "priority_count": 42,
-      "express_count": 1,
-      "pmi_count": 0,
-      "emi_count": 0,
-      "gxg_count": 0,
-      "other_count": 0
-    }
+    "usps": [
+      {
+        "manifest_number": "9275090188665400000017",
+        "priority_count": 42,
+        "express_count": 1,
+        "pmi_count": 0,
+        "emi_count": 0,
+        "gxg_count": 0,
+        "other_count": 0
+      }
+    ]
   },
   {
-    "usps": {
-      "manifest_number": "9275090188665400000024",
-      "priority_count": 1,
-      "express_count": 0,
-      "pmi_count": 0,
-      "emi_count": 0,
-      "gxg_count": 0,
-      "other_count": 0
-    }
+    "usps": [
+      {
+        "manifest_number": "9275090188665400000024",
+        "priority_count": 1,
+        "express_count": 0,
+        "pmi_count": 0,
+        "emi_count": 0,
+        "gxg_count": 0,
+        "other_count": 0
+      }
+    ]
   }
 ]
 ```
 
 ### HTTP Request
 
-`GET https://api.redbrick247.com/v1/manifests?start_date=[start_date]&end_date=[end_date]`
+`GET <%= config[:production_api_url] %>/manifests?start_date=[start_date]&end_date=[end_date]`
 
 ### Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
-start_date | (required) | Start date.
-end_date | (required) | End date.
+start_date | (required) | Start date. UTC format.
+end_date | (required) | End date. UTC format.
 
 # USPS Services
 
@@ -616,7 +654,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
   \"request_id\": \"SVCXXC009282111\",
   \"mail_class\": \"Priority\",
   \"services\" : [\"COD\"]
-}" "https://api.redbrick247.com/v1/usps_services"
+}" "<%= config[:production_api_url] %>/usps_services"
 ```
 
 > The above command returns JSON structured like this:
@@ -630,7 +668,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
 
 ### HTTP Request
 
-`POST https://api.redbrick247.com/v1/usps_services`
+`POST <%= config[:production_api_url] %>/usps_services`
 
 ### Query Parameters
 
@@ -641,20 +679,22 @@ mail_class | (required) | Mail class. One of Priority, Express, FirstClass, Parc
 services | (null/empty) | Services. One of OpenAndDistribute, Fragile, Perishable, LiveAnimal, HazMat, CrematedRemains, Certified, Restricted, Adult, COD, SignatureConfirmation, Insurance, Registered, ReturnReceipt, ReturnReceiptElectronic, ReturnReceiptMerchandise, HoldForPickup.
 value | 0 | Package insured value.
 waive_signature | true | Waive signature flag. Used for Express Mail.
-country_code | (null/empty) | Required for international mail classes.
+country_code | (null/empty) | Iso country code. Required for international mail classes.
 
 # Address
+
+Currently, only US addresses can be validated (country_code must be set to 'US').
 
 ## Validation
 
 ```shell
 curl -u user@email.com:password -X POST --header "Content-Type: application/json" --header "Accept: application/json" -d "{
-  \"line1\" : \"247 High St\", 
+  \"line1\" : \"247 High St\",
   \"city\" : \"Palo X\",
-  \"state_province\" : \"CA\", 
+  \"state_province\" : \"CA\",
   \"postal_code\" : \"94301\",
   \"country_code\": \"US\"
-}" "https://api.redbrick247.com/v1/address/validate"
+}" "<%= config[:production_api_url] %>/address/validate"
 ```
 
 > The above command returns JSON structured like this:
@@ -681,7 +721,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
 
 ### HTTP Request
 
-`POST https://api.redbrick247.com/v1/address/validate`
+`POST <%= config[:production_api_url] %>/address/validate`
 
 ### Query Parameters
 
@@ -692,7 +732,7 @@ line1 | (required) | Address line 1.
 line2 | (null/empty) | Address line 2.
 line3 | (null/empty) | Address line 3.
 city | (null/empty) | City.
-state | (null/empty) | State.
+state_province | (null/empty) | State/province.
 postal_code | (null/empty) | Postal code.
 country_code | (required) | Iso country code.
 
@@ -700,11 +740,11 @@ country_code | (required) | Iso country code.
 
 ```shell
 curl -u user@email.com:password -X POST --header "Content-Type: application/json" --header "Accept: application/json" -d "{
-  \"line1\" : \"525 University Ave\",  
-  \"city\" : \"Palo Alto\", 
-  \"state_province\" : \"CA\", 
+  \"line1\" : \"525 University Ave\",
+  \"city\" : \"Palo Alto\",
+  \"state_province\" : \"CA\",
   \"postal_code\" : \"94301\"
-}" "https://api.redbrick247.com/v1/address/resolve_multiple"
+}" "<%= config[:production_api_url] %>/address/resolve_multiple"
 ```
 
 > The above command returns JSON structured like this:
@@ -760,7 +800,7 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
 
 ### HTTP Request
 
-`POST https://api.redbrick247.com/v1/address/resolve_multiple`
+`POST <%= config[:production_api_url] %>/address/resolve_multiple`
 
 ### Query Parameters
 
@@ -770,13 +810,13 @@ line1 | (required) | Address line 1.
 line2 | (null/empty) | Address line 2.
 line3 | (null/empty) | Address line 3.
 city | (null/empty) | City.
-state | (null/empty) | State.
+state_province | (null/empty) | State/province.
 postal_code | (null/empty) | Postal code.
 
 ## Get City
 
 ```shell
-curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/address/city?zip5=94301"
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/address/city?zip5=94301"
 ```
 
 > The above command returns JSON structured like this:
@@ -790,7 +830,7 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 ### HTTP Request
 
-`GET https://api.redbrick247.com/v1/address/city?zip5=[zip5]`
+`GET <%= config[:production_api_url] %>/address/city?zip5=[zip5]`
 
 ### Query Parameters
 
@@ -801,7 +841,7 @@ zip5 | (required) | Zip 5.
 ## Get Streets
 
 ```shell
-curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/address/streets?zip5=94301"
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/address/streets?zip5=94301"
 ```
 
 > The above command returns JSON structured like this:
@@ -822,7 +862,7 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 ### HTTP Request
 
-`GET https://api.redbrick247.com/v1/address/streets?zip5=[zip5]`
+`GET <%= config[:production_api_url] %>/address/streets?zip5=[zip5]`
 
 ### Query Parameters
 
@@ -833,7 +873,7 @@ zip5 | (required) | Zip 5.
 ## Get Possible Addresses
 
 ```shell
-curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "https://api.redbrick247.com/v1/address/possible_addresses?zip5=94301&primary=247&street_name=H"
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/address/possible_addresses?zip5=94301&primary=247&street_name=H"
 ```
 
 > The above command returns JSON structured like this:
@@ -848,7 +888,7 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 ### HTTP Request
 
-`GET https://api.redbrick247.com/v1/address/possible_addresses?zip5=[zip5]&primary=[primary number]&street_name=[street name]`
+`GET <%= config[:production_api_url] %>/address/possible_addresses?zip5=[zip5]&primary=[primary number]&street_name=[street name]`
 
 ### Query Parameters
 
