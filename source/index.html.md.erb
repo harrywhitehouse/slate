@@ -5,7 +5,7 @@ language_tabs:
   - shell
 
 toc_footers:
-  - <a href='https://blue.myib.com/#/register'>Create an International Bridge Blue account</a>
+  - <a href='https://blue.myib.com/register'>Create an International Bridge Blue account</a>
 
 includes:
   - errors
@@ -188,24 +188,34 @@ height | (required) | Height.
 Parameter | Default | Description
 --------- | ------- | -----------
 mail_class | (required) | Mail class. One of Priority, Express, FirstClass, ParcelSelect, ParcelSelectLightweight, LibraryMail, MediaMail, BoundPrintedMatter, FirstClassInternational, PriorityInternational, PriorityExpressInternational.
-shape | (required) | One of Parcel, Flat, FlatRateEnvelope, LegalFlatRateEnvelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB.
+shape | (required) | One of Parcel, Flat, FlatRateEnvelope, LegalFlatRateEnvelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB. <strong>The following shapes are valid only for PMOD:</strong> Sack, FullTrayBox, HalfTrayBox, FlatTubBox, ExtendedManagedMail (aka EMMTray)
 services | (null/empty) | Services. One of OpenAndDistribute, Fragile, Perishable, LiveAnimal, HazMat, CrematedRemains, Certified, Restricted, Adult, COD, SignatureConfirmation, Insurance, Registered, ReturnReceipt, ReturnReceiptElectronic, ReturnReceiptMerchandise, HoldForPickup.
 image_size | 4x6 | Image size.
 po_zip_code | (see Description) | Induction zip code. If not provided, it defaults to the mailpiece from address postal code.
 presort_level | (conditional) | Presort level. Required for Library Mail, Media Mail, Parcel Select Destination Entry and Parcel Select Lightweight. One of None, 5-Digit, 3-Digit, SCF, NDC, MixedNDC, DDU, Basic.
 entry_facility | (conditional) | Entry facility. Required for Parcel Select Destination Entry and Parcel Select Lightweight. One of None, DNDC, DSCF, DDU.
-softpack | (conditional) | Boolean softpack indicator. Applies to cubic.
+softpack | (conditional) | Boolean softpack indicator. Applies ONLY to Priority Mail cubic.
 open_and_distribute | (conditional) | Required when services includes OpenAndDistribute. See details [here](#usps-open_and_distribute-query-parameters).
 
 ### USPS open_and_distribute Query Parameters
+
+The Open and Distribute (PMOD) service is a special feature of Priority Mail. The first address line of a PMOD label must adhere to specifications found in Postal Bulletin 22507. Use the API's company_name field of the To-Address to specify this line. 
+
+For example, an SCF-destined PMOD container address format will start with "SCF" followed by the destination city, state, followed by the facility's NASS (National Air and Surface System) code. An example would be "SCF Royal Palm FL 330PM", where the "330PM" is the NASS code.  A similar construct is used for NDC, ASF, and ADC PMOD labels.  
+
+For DDU-destined PMOD labels, the first line will be of the form "DDU" followed by city and state. 
+
+You must provide the full address of each facility, although for SCF, NDC, ASF and ADC labels only the first line will actually be printed on the label. DDU labels will have the complete address printed -- including street address and city, state, zip.
+
+For more information, consult [<%= config[:fast_usps] %>](<%= config[:fast_usps] %>)
 
 Parameter | Default | Description
 --------- | ------- | -----------
 enclosed_mail_class | (required) | Enclosed mail class. One of MixedMail, PriorityMail, ParcelSelectMail, ParcelSelectLightweightMail, LibraryMail, MediaMail, BoundPrintedMatterMail, RetailGround, MarketingMail, ParcelReturnServiceMail, MatterForTheBlindMail.
 enclosed_shape | (required) | Enclosed mailpiece shape. One of Parcels, Letters, Flats.
 facility_type | (required) | Destination processing facility type. One of SCF, DDU, ADC, ASF, NDC.
-ddu_facility_name | (conditional) | Required when facility_type is DDU.
-container | (required) | Container type. One of FullTrayBox, HalfTrayBox, FlatTubeTrayBox, ExtendedManagedMail.
+
+
 
 ### gss Label Query Parameters
 
@@ -474,26 +484,26 @@ usps | (null/empty) | USPS carrier data. See details [here](#usps-price-query-pa
 gss | (null/empty) | GSS program data. See details [here](#gss-price-query-parameters).
 ups | (null/empty) | UPS carrier data. See details [here](#ups-price-query-parameters).
 
-### usps Price Query Parameters
+### USPS Price Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
 mail_class | (required) | Mail class. One of Priority, Express, FirstClass, ParcelSelect, ParcelSelectLightweight, LibraryMail, MediaMail, BoundPrintedMatter, FirstClassInternational, PriorityInternational, PriorityExpressInternational.
-shape | (required) | One of Parcel, Flat, FlatRateEnvelope, LegalFlatRateEnvelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB.
+shape | (required) | One of Parcel, Flat, FlatRateEnvelope, LegalFlatRateEnvelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB. Envelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB. <strong>The following shapes are valid only for PMOD:</strong> Sack, FullTrayBox, HalfTrayBox, FlatTubBox, ExtendedManagedMail (aka EMMTray)
 services | (null/empty) | Services. One of OpenAndDistribute, Fragile, Perishable, LiveAnimal, HazMat, CrematedRemains, Certified, Restricted, Adult, COD, SignatureConfirmation, Insurance, Registered, ReturnReceipt, ReturnReceiptElectronic, ReturnReceiptMerchandise, HoldForPickup.
 po_zip_code | (see Description) | Induction zip code. If not provided, it defaults to the mailpiece from address postal code.
 presort_level | (conditional) | Presort level. Required for Library Mail, Media Mail, Parcel Select Destination Entry and Parcel Select Lightweight. One of None, 5-Digit, 3-Digit, SCF, NDC, MixedNDC, DDU, Basic.
 entry_facility | (conditional) | Entry facility. Required for Parcel Select Destination Entry and Parcel Select Lightweight. One of None, DNDC, DSCF, DDU.
 softpack | (conditional) | Boolean softpack indicator. Applies to cubic.
 
-### gss Price Query Parameters
+### GSS Price Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
 mail_class | (required) | Mail class. One of ePacket, PriorityInternational, PriorityExpressInternational, FirstClassInternational, InternationalPriorityAirmail, InternationalSurfaceAirLift.
 location_id | (required) | The location ID as provided by the GSS program.
 
-### ups Price Query Parameters
+### UPS Price Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
@@ -552,7 +562,7 @@ image_format | (required) | Image format. One of png, pdf, svg, zpl.
 image_resolution | 300 | Image resolution in DPI. One of 150, 203, 300, 600.
 usps | (null/empty) | USPS carrier data. See details [here](#usps-manifest-query-parameters).
 
-### usps Manifest Query Parameters
+### USPS Manifest Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
