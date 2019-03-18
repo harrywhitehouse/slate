@@ -907,3 +907,28 @@ Parameter | Default | Description
 zip5 | (required) | Zip 5.
 primary number | (required) | Primary street number.
 street name | (null/empty) | Street name. Could be null, incomplete (e.g. "H") or full (e.g. "High")
+
+# Pagination
+
+### HTTP Request
+
+`POST <%= config[:production_api_url] %>/mailpieces?page_number=2&page_size=10`
+
+
+> The above command returns headers structured like this for pagination:
+
+```json
+Current-Page →2
+Page-Count →167
+Page-Size →10
+Total-Count-Of-Items →1667
+```
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+page_size | (25) | Page size.
+page_number | (1) | Page number.
+
+Currently not all endpoints support pagination.
