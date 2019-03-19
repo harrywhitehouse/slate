@@ -211,7 +211,7 @@ For more information, consult [<%= config[:fast_usps] %>](<%= config[:fast_usps]
 
 Parameter | Default | Description
 --------- | ------- | -----------
-enclosed_mail_class | (required) | Enclosed mail class. One of MixedMail, PriorityMail, ParcelSelectMail, ParcelSelectLightweightMail, LibraryMail, MediaMail, BoundPrintedMatterMail, RetailGround, MarketingMail, ParcelReturnServiceMail, MatterForTheBlindMail.
+enclosed_mail_class | (required) | Enclosed mail class. One of MixedMail, PriorityMail, ParcelSelectMail, ParcelSelectLightweightMail, LibraryMail, MediaMail, BoundPrintedMatterMail, RetailGround, MarketingMail, ParcelReturnServiceMail, MatterForTheBlindMail, Periodicals.
 enclosed_shape | (required) | Enclosed mailpiece shape. One of Parcels, Letters, Flats.
 facility_type | (required) | Destination processing facility type. One of SCF, DDU, ADC, ASF, NDC.
 
@@ -256,6 +256,7 @@ importers_customs_reference_type | (null/empty) | Importer's customs reference t
 license_number | (null/empty) | License number.
 certificate_number | (null/empty) | Certificate number.
 invoice_number | (null/empty) | Invoice number.
+customs_signator | (required) | First and last name of person responsible for shipment.
 importers_contact | (null/empty) | Importer's contact phone number.
 pfc_itn | (null/empty) | Proof of filing citation ITN number.
 insured_number | (null/empty) | Insured reference number.
@@ -566,9 +567,27 @@ usps | (null/empty) | USPS carrier data. See details [here](#usps-manifest-query
 
 Parameter | Default | Description
 --------- | ------- | -----------
-zip_code | (see Description) | Induction zip code. Defaults to the user's account address zip code.
-zip4 | (see Description) | Induction zip4 code. Defaults to the user's account address zip4 code.
+induction_address | (null/empty) | Induction address. Defaults to the user's account address. See details [here](#usps-induction-address-query-parameters).
 tracking_numbers | (null/empty) | Tracking numbers collection to be included in this manifest. If omitted, all tracking numbers not included in the previous manifest are returned.
+
+### USPS Induction Address Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+company_name | (conditional) | Company name. Required when first name and last name are not provided.
+first_name | (conditional) | First name. Required when company name is not provided.
+middle_name | (null/empty) | Middle name.
+last_name | (conditional) | Last name. Required when company name is not provided.
+phone_number | (null/empty) | Phone number.
+email | (null/empty) | Email.
+sms | (null/empty) | Sms phone number.
+line1 | (required) | Address line 1.
+line2 | (null/empty) | Address line 2.
+line3 | (null/empty) | Address line 3.
+city | (required) | City.
+state_province | (conditional) | State/province. Required for USPS carrier.
+postal_code | (conditional) | Postal code. Zip code for USPS carrier. Required for USPS carrier.
+country_code | (required) | Iso country code.
 
 ## Get (Reprint) a Manifest
 
