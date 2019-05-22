@@ -17,17 +17,37 @@ search: true
 
 The <%= config[:product_name] %> API allows developers to integrate shipping labels and fullfillment within their e-commerce businesses and online marketplaces. The API offers price comparison, label printing, manifest generation, transactions details and tracking features. The guideline below will help get you started. For additional help, please email us at [<%= config[:support_email] %>](mailto:<%= config[:support_email] %>).
 
-## Create Account
+To create an account, please visit [<%= config[:production_website_url] %>](<%= config[:production_registration_url] %>) and sign up for a free account. You'll use the same email address and password to submit API requests (see below). Before you can start printing live labels, you'll need to (1) verify your email address, (2) verify your SMS, (3) fill in your full mailing address and (4) add a valid credit card to our system.
 
-To create an account, please visit [<%= config[:production_website_url] %>](<%= config[:production_registration_url] %>) and sign up for a free account. You'll use the same email address and password to submit API requests (see below). Before you can start printing live labels, you'll need to provide us with your full mailing address and credit card information.
+## Carriers and Services
 
-If you are part of an organization that has USPS negotiated rates and/or if you'd like to manage organization users (for pricing and billing), some necessary steps are required. Please email us at [<%= config[:support_email] %>](mailto:<%= config[:support_email] %>).
+Currently the International Bridge Blue platform supports USPS, GSS (presorted and discounted USPS), FedEx and UPS services. We are in the process of adding more carriers and services.
+
+## eVS vs ePostage
+
+International Bridge is certified for both USPS eVS and USPS ePostage. By default, accounts are set up with the ePostage configuration. If you'd like to switch your account to the eVS configuration, please email us at [<%= config[:support_email] %>](mailto:<%= config[:support_email] %>).
+
+## Discounts
+
+For high volume shippers, please contact us for possible domestic and international rate discounts. If you are part of an organization that has USPS negotiated rates and/or if you'd like to manage organization users (for pricing and billing), some additional steps are required. Please email us at [<%= config[:support_email] %>](mailto:<%= config[:support_email] %>).
+
+## Billing
+
+We support several payment methods. By default, accounts are set up for "meter" payments. You can add funds to your meter using different payment methods (credit card, Paypal or by mailing us a check). As you print shipping labels via the Blue website or the Blue API, the cost of the label is deducted from your account/meter balance. You can turn on the meter auto-refill flag to ensure printing labels without any downtime. For high volume shippers who are also trusted and vetted partners, we offer invoice billing.
+
+## Manifesting
+
+Manifesting can be performed explicitly (for one or all unmanifested mailpieces) via the manifesting API or by using the Blue website. International Bridge manifests "on behalf of the user" at the end of the day at 11:55PM PST based on the mailpiece's postmark date. The manifest response contains a collection of several SCAN (Shipment Confirmation Acceptance Notice) forms, each with its EFN (Electronic File Number); the number of the SCAN forms depends on the induction point, destination entry and other aggregation factors.
+
+## Refunds
+
+Unmanifested mailpieces can be refunded immediately. For the already manifested mailpieces (whether explicitly or automatically end-of-day), refunds are approved after approximately 2 weeks, pending that the labels were never used (i.e. tracking events don't exist).
 
 ## Sandbox
 
 The Sandbox environment will help you get started, test your requests and the API responses before you generate Production labels. To create an account on the Sandbox environment, please visit [<%= config[:sandbox_website_url] %>](<%= config[:sandbox_registration_url] %>). A full mailing address and credit card information is not required like it is in Production. You cannot induct mailpieces into the mailstream using labels generated in the Sandbox environment. There are no additional charges associated with requests in the Sandbox environment. When you are ready to generate live labels, switch the API Sandbox URL with the API Production URL. The requests (including headers) do not change.
 
-## Endpoints
+## API Endpoints
 
 <aside class="notice">
 Sandbox: <%= config[:sandbox_api_url] %>
@@ -57,7 +77,22 @@ The structure of the API has been designed to support multiple carriers, and to 
 
 Responses follow the same structure. Shipping metadata which is carrier specific is returned in carrier specific attributes.
 
-Currently the API supports the following carriers: USPS, GSS (program), UPS, FedEx.
+## Pagination
+
+The RESTful routes that return array of entities are paginated. The `page_number` and `page_size` parameters can be set in the URL query parameters or in the request headers. The response headers will contain the following pagination fields: `page-count`, `page-size`, `total-count-of-items`, `current-page`.
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/labels?request_id=123&page_number=2&page_size=10"
+```
+
+> The above command returns headers structured like this:
+
+```json
+Current-Page →2
+Page-Count →167
+Page-Size →10
+Total-Count-Of-Items →1667
+```
 
 # Labels
 
@@ -135,6 +170,7 @@ weight | (required) | Weight.
 weight_unit | (required) | Weight unit. One of oz, lb, g, kg.
 dimensions | (null/empty) | Dimensions. See details [here](#dimensions-query-parameters).
 dimensions_unit | (required if dimensions provided) | Dimensions unit. One of in, ft, mm, cm, m.
+value | (null/empty) | Total package value. Required for most international (customs form) requests.
 non_delivery_option | Return | Non-delivery option. One of Abandon, Return.
 postmark_date | (UTC current date time) | UTC postmark date.
 image_format | (required) | Image format. One of png, pdf, svg, zpl, gif.
@@ -199,11 +235,11 @@ open_and_distribute | (conditional) | Required when services includes OpenAndDis
 
 ### USPS open_and_distribute Query Parameters
 
-The Open and Distribute (PMOD) service is a special feature of Priority Mail. The first address line of a PMOD label must adhere to specifications found in Postal Bulletin 22507. Use the API's company_name field of the To-Address to specify this line. 
+The Open and Distribute (PMOD) service is a special feature of Priority Mail. The first address line of a PMOD label must adhere to specifications found in Postal Bulletin 22507. Use the API's company_name field of the To-Address to specify this line.
 
-For example, an SCF-destined PMOD container address format will start with "SCF" followed by the destination city, state, followed by the facility's NASS (National Air and Surface System) code. An example would be "SCF Royal Palm FL 330PM", where the "330PM" is the NASS code.  A similar construct is used for NDC, ASF, and ADC PMOD labels.  
+For example, an SCF-destined PMOD container address format will start with "SCF" followed by the destination city, state, followed by the facility's NASS (National Air and Surface System) code. An example would be "SCF Royal Palm FL 330PM", where the "330PM" is the NASS code.  A similar construct is used for NDC, ASF, and ADC PMOD labels.
 
-For DDU-destined PMOD labels, the first line will be of the form "DDU" followed by city and state. 
+For DDU-destined PMOD labels, the first line will be of the form "DDU" followed by city and state.
 
 You must provide the full address of each facility, although for SCF, NDC, ASF and ADC labels only the first line will actually be printed on the label. DDU labels will have the complete address printed -- including street address and city, state, zip.
 
@@ -407,8 +443,12 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 Parameter | Default | Description
 --------- | ------- | -----------
-start_date | (required) | Start date. UTC format.
-end_date | (required) | End date. UTC format.
+start_date | (conditional) | Start date. UTC format. Mutually exclusive with request_id and status.
+end_date | (conditional) | End date. UTC format. Mutually exclusive with request_id and status.
+request_id | (conditional) | Request ID (used when creating the label). Mutually exclusive with date range and status.
+status | (conditional) | Label status. Mutually exclusive with date range and request_id.
+page_size | 25 | Page size.
+page_number | 1 | Page number.
 
 # Price
 
@@ -567,10 +607,10 @@ usps | (null/empty) | USPS carrier data. See details [here](#usps-manifest-query
 
 Parameter | Default | Description
 --------- | ------- | -----------
-induction_address | (null/empty) | Induction address. Defaults to the user's account address. See details [here](#usps-induction-address-query-parameters).
+induction_address | (null/empty) | Induction address. Defaults to the user's account address. See details [here](#usps-contact-address-query-parameters).
 tracking_numbers | (null/empty) | Tracking numbers collection to be included in this manifest. If omitted, all tracking numbers not included in the previous manifest are returned.
 
-### USPS Induction Address Query Parameters
+### USPS Contact Address Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
@@ -671,8 +711,12 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 Parameter | Default | Description
 --------- | ------- | -----------
-start_date | (required) | Start date. UTC format.
-end_date | (required) | End date. UTC format.
+start_date | (conditional) | Start date. UTC format. Mutually exclusive with request_id and status.
+end_date	(conditional) | End date. UTC format. Mutually exclusive with request_id and status.
+request_id | (conditional) | Request ID (used when creating the label). Mutually exclusive with date range and status.
+status | (conditional) | Label status. Mutually exclusive with date range and request_id.
+page_size | 25 | Page size.
+page_number | 1 | Page number.
 
 # USPS Services
 
@@ -1004,6 +1048,13 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 `GET <%= config[:production_api_url] %>/payment_methods`
 
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+page_size | 25 | Page size.
+page_number | 1 | Page number.
+
 # Payment Transactions
 
 ## Buy
@@ -1042,3 +1093,47 @@ curl -u user@email.com:password -X POST --header "Content-Type: application/json
 Parameter | Default | Description
 --------- | ------- | -----------
 transaction_amount | (required) | Amount that will be charged from the payment method. When the transaction is approved your account balance will be increased by the amount.
+
+## Get Payment Transactions
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/payment_transactions"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+    {
+        "id": "5b72442d-f72b-49f0-a8ad-0ad30469930b",
+        "amount": 20,
+        "completed": true,
+        "type": "BraintreeCreditCardPaymentTransaction",
+        "processed_at": "2018-10-30T08:14:55.674-07:00",
+        "comment": null,
+        "payment_method": {
+            "id": "844b1769-480a-4d64-a9e1-7a2d2cfa57f7",
+            "type": "CreditCard",
+            "credit_card_type": "Visa",
+            "credit_card_last_4": 3199,
+            "credit_card_exp_month": 7,
+            "credit_card_exp_year": 2022,
+            "default": true,
+            "autofill": true,
+            "autofill_limit": 10
+        }
+    },
+    ...
+]
+```
+
+### HTTP Request
+
+`GET <%= config[:production_api_url] %>/payment_transactions`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+page_size | 25 | Page size.
+page_number | 1 | Page number.
