@@ -1,0 +1,82 @@
+# Payment Transactions
+
+## Buy
+
+Add funds to your account balance by calling `buy` on a payment method.
+
+```shell
+curl -u user@email.com:password -X POST --header "Content-Type: application/json" --header "Accept: application/json" -d "{
+  \"transaction_amount\" : 100
+}" "<%= config[:production_api_url] %>/payment_transactions/97d391d0-03ed-4d67-93c4-98c45439eadd/buy"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "id": "6493b8c1-5593-4631-b781-2321ea7c256b",
+  "amount": 100,
+  "status": "approved",
+  "completed": true,
+  "payment_method_id": "97d391d0-03ed-4d67-93c4-98c45439eadd",
+  "user_id": "880c7358-0223-438a-ab4e-815903d7d3a3",
+  "created_at": "2019-04-26T03:44:45.403-07:00",
+  "updated_at": "2019-04-26T03:44:46.318-07:00",
+  "processed_at": null,
+  "external_id": "k1z2et3f"
+}
+```
+
+### HTTP Request
+
+`POST <%= config[:production_api_url] %>/payment_transactions/[payment_method_id]/buy`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+transaction_amount | (required) | Amount that will be charged from the payment method. When the transaction is approved your account balance will be increased by the amount.
+
+## Get Payment Transactions
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/payment_transactions"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+    {
+        "id": "5b72442d-f72b-49f0-a8ad-0ad30469930b",
+        "amount": 20,
+        "completed": true,
+        "type": "BraintreeCreditCardPaymentTransaction",
+        "processed_at": "2018-10-30T08:14:55.674-07:00",
+        "comment": null,
+        "payment_method": {
+            "id": "844b1769-480a-4d64-a9e1-7a2d2cfa57f7",
+            "type": "CreditCard",
+            "credit_card_type": "Visa",
+            "credit_card_last_4": 3199,
+            "credit_card_exp_month": 7,
+            "credit_card_exp_year": 2022,
+            "default": true,
+            "autofill": true,
+            "autofill_limit": 10
+        }
+    },
+    ...
+]
+```
+
+### HTTP Request
+
+`GET <%= config[:production_api_url] %>/payment_transactions`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+page_size | 25 | Page size.
+page_number | 1 | Page number.

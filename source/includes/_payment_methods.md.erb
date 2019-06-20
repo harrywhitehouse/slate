@@ -1,0 +1,83 @@
+# Payment Methods
+
+## Create a Payment Method
+
+To create a payment method, please visit [<%= config[:production_website_url] %>](<%= config[:production_payment_details_url] %>). It is not available via API.
+
+## Delete a Payment Method
+
+```shell
+curl -u user@email.com:password -X DELETE --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/payment_methods/97d391d0-03ed-4d67-93c4-98c4543"
+```
+
+### HTTP Request
+
+`DELETE <%= config[:production_api_url] %>/payment_methods/[payment_method_id]`
+
+## Get Payment Methods
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/payment_methods"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+  {
+    "id": "2d663c19-2a8f-44ad-b92c-4723a25843d3",
+    "type": "ACH",
+    "bank_name": "FEDERAL RESERVE BANK",
+    "routing_no": "011000015",
+    "bank_account_last_4": "0000",
+    "account_type": "checking",
+    "ownership_type": "personal",
+    "payment_method_status": {
+      "id": 1,
+      "name": "Active",
+      "description": "Active."
+    }
+  },
+  {
+    "id": "2f1000c5-ecac-4c77-876c-9431551a5f92",
+    "type": "ACH",
+    "bank_name": "FEDERAL RESERVE BANK",
+    "routing_no": "011000015",
+    "bank_account_last_4": "0001",
+    "account_type": "checking",
+    "ownership_type": "personal",
+    "payment_method_status": {
+      "id": 3,
+      "name": "PendingMicrotransactions",
+      "description": "Pending bank account verification by micro transactions."
+    }
+  },
+  {
+    "id": "00a2ab65-53cc-4a1e-8532-0527f0ac26c6",
+    "type": "CreditCard",
+    "credit_card_type": "Discover",
+    "credit_card_last_4": 1117,
+    "credit_card_exp_month": 10,
+    "credit_card_exp_year": 2019,
+    "default": true,
+    "autofill": true,
+    "autofill_limit": 100,
+    "payment_method_status": {
+      "id": 1,
+      "name": "Active",
+      "description": "Active."
+    }
+  }
+]
+```
+
+### HTTP Request
+
+`GET <%= config[:production_api_url] %>/payment_methods`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+page_size | 25 | Page size.
+page_number | 1 | Page number.
