@@ -637,7 +637,7 @@ country_code | (required) | Iso country code.
 ## Get (Reprint) a Manifest
 
 ```shell
-curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/manifests/9210890188666700000058"
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/manifests/9275090188665400000024"
 ```
 
 > The above command returns JSON structured like this:
@@ -661,13 +661,13 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 ### HTTP Request
 
-`GET <%= config[:production_api_url] %>/manifests/[tracking_number]`
+`GET <%= config[:production_api_url] %>/manifests/[manifest_number]`
 
 ### Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
-tracking_number | (required) | Tracking number.
+manifest_number | (required) | Manifest number.
 
 ## Get Manifests
 
