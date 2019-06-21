@@ -1,0 +1,103 @@
+# Price
+
+## Calculate Shipping Price
+
+```shell
+curl -u user@email.com:password -X POST --header "Content-Type: application/json" --header "Accept: application/json" -d "{
+  \"request_id\": \"PRIC920021-3AC\",
+  \"from_address\": {
+    \"first_name\": \"John\",
+    \"last_name\": \"Michaels\",
+    \"line1\": \"247 High St\",
+    \"city\": \"Palo Alto\",
+    \"state_province\": \"CA\",
+    \"postal_code\": \"94301\",
+    \"country_code\": \"US\"
+  },
+  \"to_address\": {
+    \"first_name\": \"Ted\",
+    \"last_name\": \"Resnick\",
+    \"line1\": \"350 5th Ave\",
+    \"line2\": \"Suite 7510\",
+    \"city\": \"New York\",
+    \"state_province\": \"NY\",
+    \"postal_code\": \"10118\",
+    \"country_code\": \"US\"
+  },
+  \"weight\": 2,
+  \"weight_unit\": \"lb\",
+  \"usps\": {
+    \"mail_class\": \"Priority\",
+    \"shape\": \"Parcel\",
+    \"services\": [
+      \"SignatureConfirmation\"
+    ]
+  }
+}" "<%= config[:production_api_url] %>/price"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "request_id" : "PRIC920021-3AC",
+  "postage_amount" : 10.44,
+  "fees_amount" : 2.35,
+  "total_amount" : 12.79,
+  "usps": {
+    "pricing" : "Commercial Plus",
+    "fees" : [{ "name" : "Signature Confirmation", "fee" : 2.35 }]
+  }
+}
+```
+
+### HTTP Request
+
+`POST <%= config[:production_api_url] %>/price`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+request_id | (null/empty) | Request ID. Used by API developers to match requests and responses. Echoed back in the request_id tag of the response.
+from_address | (required) | From shipping address. See details [here](#address-query-parameters).
+to_address | (required) | To shipping address. See details [here](#address-query-parameters).
+weight | (required) | Weight.
+weight_unit | (required) | Weight unit. One of oz, lb, g, kg.
+dimensions | (null/empty) | Dimensions. See details [here](#dimensions-query-parameters).
+dimensions_unit | (required if dimensions provided) | Dimensions unit. One of in, ft, mm, cm, m.
+non_delivery_option | Return | Non delivery option. One of Abandon, Return.
+postmark_date | (UTC current date time) | UTC postmark date.
+customs_form | (null/empty) | Customs form for military (APO/FPO/DPO) and international shipping. See details [here](#customs_form-query-parameters).
+usps | (null/empty) | USPS carrier data. See details [here](#usps-price-query-parameters).
+gss | (null/empty) | GSS program data. See details [here](#gss-price-query-parameters).
+ups | (null/empty) | UPS carrier data. See details [here](#ups-price-query-parameters).
+
+### USPS Price Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+mail_class | (required) | Mail class. One of Priority, Express, FirstClass, ParcelSelect, ParcelSelectLightweight, LibraryMail, MediaMail, BoundPrintedMatter, FirstClassInternational, PriorityInternational, PriorityExpressInternational.
+shape | (required) | One of Parcel, Flat, FlatRateEnvelope, LegalFlatRateEnvelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB. Envelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB. <strong>The following shapes are valid only for PMOD:</strong> Sack, FullTrayBox, HalfTrayBox, FlatTubBox, ExtendedManagedMail (aka EMMTray)
+pricing | (null/empty) | One of Retail, CommercialBase, CommercialPlus, Custom. Defaults to the least expensive.
+services | (null/empty) | Services. One of OpenAndDistribute, Fragile, Perishable, LiveAnimal, HazMat, CrematedRemains, Certified, Restricted, Adult, COD, SignatureConfirmation, Insurance, Registered, ReturnReceipt, ReturnReceiptElectronic, ReturnReceiptMerchandise, HoldForPickup.
+po_zip_code | (see Description) | Induction zip code. If not provided, it defaults to the mailpiece from address postal code.
+presort_level | (conditional) | Presort level. Required for Library Mail, Media Mail, Parcel Select Destination Entry and Parcel Select Lightweight. One of None, 5-Digit, 3-Digit, SCF, NDC, MixedNDC, DDU, Basic.
+entry_facility | (conditional) | Entry facility. Required for Parcel Select Destination Entry and Parcel Select Lightweight. One of None, DNDC, DSCF, DDU.
+softpack | (conditional) | Boolean softpack indicator. Applies to cubic.
+
+### GSS Price Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+mail_class | (required) | Mail class. One of ePacket, PriorityInternational, PriorityExpressInternational, FirstClassInternational, InternationalPriorityAirmail, InternationalSurfaceAirLift.
+location_id | (required) | The location ID as provided by the GSS program.
+
+### UPS Price Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+service | (required) | Service. One of NextDayAir, 2ndDayAir, Ground, 3DaySelect, NextDayAirSaver, NextDayAirEarly, 2ndDayAirAM, WorldwideExpress, WorldwideExpedited, ExpressStandard, WorldwideExpressPlus, WorldwideSaver.
+packaging_type | (required) | Packaging Type. One of Letter, Package, Tube, Pak, SmallExpressBox, MediumExpressBox, LargeExpressBox.
+cod_package_option | (null/empty) | COD package options. See details [here](#ups-cod_package_option-query-parameters).
+delcon_package_option | (null/empty) | Delivery Confirmation package options. See details [here](#ups-delcon_package_option-query-parameters).

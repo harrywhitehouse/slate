@@ -1,0 +1,35 @@
+# USPS Services
+
+## Get USPS Services
+
+```shell
+curl -u user@email.com:password -X POST --header "Content-Type: application/json" --header "Accept: application/json" -d "{
+  \"request_id\": \"SVCXXC009282111\",
+  \"mail_class\": \"Priority\",
+  \"services\" : [\"COD\"]
+}" "<%= config[:production_api_url] %>/usps_services"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "request_id" : "SVCXXC009282111",
+  "services" : ["COD", "ReturnReceipt", "ReturnReceiptElectronic", "Restricted", "SignatureConfirmation"]
+}
+```
+
+### HTTP Request
+
+`POST <%= config[:production_api_url] %>/usps_services`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+request_id | (null/empty) | Request ID. Used by API developers to match requests and responses. Echoed back in the request_id tag of the response.
+mail_class | (required) | Mail class. One of Priority, Express, FirstClass, ParcelSelect, ParcelSelectLightweight, LibraryMail, MediaMail, BoundPrintedMatter, FirstClassInternational, PriorityInternational, PriorityExpressInternational.
+services | (null/empty) | Services. One of OpenAndDistribute, Fragile, Perishable, LiveAnimal, HazMat, CrematedRemains, Certified, Restricted, Adult, COD, SignatureConfirmation, Insurance, Registered, ReturnReceipt, ReturnReceiptElectronic, ReturnReceiptMerchandise, HoldForPickup.
+value | 0 | Package insured value.
+waive_signature | true | Waive signature flag. Used for Express Mail.
+country_code | (null/empty) | Iso country code. Required for international mail classes.

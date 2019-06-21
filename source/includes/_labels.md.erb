@@ -1,0 +1,355 @@
+# Labels
+
+## Create a Shipping Label
+
+```shell
+curl -u user@email.com:password -X POST --header "Content-Type: application/json" --header "Accept: application/json" -d "{
+  \"request_id\": \"AQX90000000234\",
+  \"from_address\": {
+    \"first_name\": \"John\",
+    \"last_name\": \"Michaels\",
+    \"line1\": \"247 High St\",
+    \"city\": \"Palo Alto\",
+    \"state_province\": \"CA\",
+    \"postal_code\": \"94301\",
+    \"country_code\": \"US\"
+  },
+  \"to_address\": {
+    \"first_name\": \"Ted\",
+    \"last_name\": \"Resnick\",
+    \"line1\": \"350 5th Ave\",
+    \"line2\": \"Suite 7510\",
+    \"city\": \"New York\",
+    \"state_province\": \"NY\",
+    \"postal_code\": \"10118\",
+    \"country_code\": \"US\"
+  },
+  \"weight\": 2,
+  \"weight_unit\": \"lb\",
+  \"image_format\": \"png\",
+  \"usps\": {
+    \"mail_class\": \"Priority\",
+    \"shape\": \"Parcel\",
+    \"image_size\": \"4x6\",
+    \"services\": [
+      \"SignatureConfirmation\"
+    ]
+  }
+}" "<%= config[:production_api_url] %>/labels"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "request_id" : "AQX90000000234",
+  "status" : "created",
+  "postmark_date":"2018-03-22T23:37:05-07:00",
+  "postage_amount" : 10.44,
+  "fees_amount" : 2.35,
+  "total_amount" : 12.79,
+  "usps": {
+    "tracking_numbers" : ["9210890188666700000058"],
+    "pricing" : "Commercial Plus",
+    "fees" : [{ "name" : "Signature Confirmation", "fee" : 2.35 }],
+    "zone": 1
+  },
+  "base64_labels" : ["iVBORw0KGgoAAAA..."]
+}
+```
+
+### HTTP Request
+
+`POST <%= config[:production_api_url] %>/labels`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+request_id | (null/empty) | Request ID. Used by API developers to match requests and responses. Echoed back in the request_id tag of the response.
+metadata | (null/empty) | Metadata details like references and rubberstamps. See details [here](#metadata-query-parameters)
+from_address | (required) | From shipping address. See details [here](#address-query-parameters).
+to_address | (required) | To shipping address. See details [here](#address-query-parameters).
+weight | (required) | Weight.
+weight_unit | (required) | Weight unit. One of oz, lb, g, kg.
+dimensions | (null/empty) | Dimensions. See details [here](#dimensions-query-parameters).
+dimensions_unit | (required if dimensions provided) | Dimensions unit. One of in, ft, mm, cm, m.
+value | (null/empty) | Total package value. Required for most international (customs form) requests.
+non_delivery_option | Return | Non-delivery option. One of Abandon, Return.
+postmark_date | (UTC current date time) | UTC postmark date.
+image_format | (required) | Image format. One of png, pdf, svg, zpl, gif.
+image_resolution | 300 | Image resolution in DPI. One of 150, 203, 300, 600.
+customs_form | (null/empty) | Customs form for military (APO/FPO/DPO) and international shipping. See details [here](#customs_form-query-parameters).
+usps | (null/empty) | USPS carrier data. See details [here](#usps-label-query-parameters).
+gss | (null/empty) | GSS program data. See details [here](#gss-label-query-parameters).
+ups | (null/empty) | UPS carrier data. See details [here](#ups-label-query-parameters).
+fedex | (null/empty) | FedEx carrier data. See details [here](#fedex-label-query-parameters).
+
+### metadata Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+rubberstamp1 | (null/empty) | User defined rubberstamp. Prints at different locations depending on the label type and size.
+rubberstamp2 | (null/empty) | User defined rubberstamp. Prints at different locations depending on the label type and size.
+rubberstamp3 | (null/empty) | User defined rubberstamp. Prints at different locations depending on the label type and size.
+reference1 | (null/empty) | User defined reference. Becomes searchable field.
+reference2 | (null/empty) | User defined reference. Becomes searchable field.
+reference3 | (null/empty) | User defined reference. Becomes searchable field.
+
+### address Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+company_name | (conditional) | Company name. Required when first name and last name are not provided.
+first_name | (conditional) | First name. Required when company name is not provided.
+middle_name | (null/empty) | Middle name.
+last_name | (conditional) | Last name. Required when company name is not provided.
+phone_number | (null/empty) | Phone number.
+email | (null/empty) | Email.
+sms | (null/empty) | Sms phone number.
+line1 | (required) | Address line 1.
+line2 | (null/empty) | Address line 2.
+line3 | (null/empty) | Address line 3.
+city | (required) | City.
+state_province | (conditional) | State/province. Required for USPS carrier.
+postal_code | (conditional) | Postal code. Zip code for USPS carrier. Required for USPS carrier.
+country_code | (required) | Iso country code.
+
+### dimensions Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+width | (required) | Width.
+length | (required) | Length.
+height | (required) | Height.
+
+### usps Label Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+mail_class | (required) | Mail class. One of Priority, Express, FirstClass, ParcelSelect, ParcelSelectLightweight, LibraryMail, MediaMail, BoundPrintedMatter, FirstClassInternational, PriorityInternational, PriorityExpressInternational.
+shape | (required) | One of Parcel, Flat, FlatRateEnvelope, LegalFlatRateEnvelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB. <strong>The following shapes are valid only for PMOD:</strong> Sack, FullTrayBox, HalfTrayBox, FlatTubBox, ExtendedManagedMail (aka EMMTray)
+services | (null/empty) | Services. One of OpenAndDistribute, Fragile, Perishable, LiveAnimal, HazMat, CrematedRemains, Certified, Restricted, Adult, COD, SignatureConfirmation, Insurance, Registered, ReturnReceipt, ReturnReceiptElectronic, ReturnReceiptMerchandise, HoldForPickup.
+image_size | 4x6 | Image size. One of 4x6, 6x4.
+po_zip_code | (see Description) | Induction zip code. If not provided, it defaults to the mailpiece from address postal code.
+presort_level | (conditional) | Presort level. Required for Library Mail, Media Mail, Parcel Select Destination Entry and Parcel Select Lightweight. One of None, 5-Digit, 3-Digit, SCF, NDC, MixedNDC, DDU, Basic.
+entry_facility | (conditional) | Entry facility. Required for Parcel Select Destination Entry and Parcel Select Lightweight. One of None, DNDC, DSCF, DDU.
+softpack | (conditional) | Boolean softpack indicator. Applies ONLY to Priority Mail cubic.
+open_and_distribute | (conditional) | Required when services includes OpenAndDistribute. See details [here](#usps-open_and_distribute-query-parameters).
+
+### USPS open_and_distribute Query Parameters
+
+The Open and Distribute (PMOD) service is a special feature of Priority Mail. The first address line of a PMOD label must adhere to specifications found in Postal Bulletin 22507. Use the API's company_name field of the To-Address to specify this line.
+
+For example, an SCF-destined PMOD container address format will start with "SCF" followed by the destination city, state, followed by the facility's NASS (National Air and Surface System) code. An example would be "SCF Royal Palm FL 330PM", where the "330PM" is the NASS code.  A similar construct is used for NDC, ASF, and ADC PMOD labels.
+
+For DDU-destined PMOD labels, the first line will be of the form "DDU" followed by city and state.
+
+You must provide the full address of each facility, although for SCF, NDC, ASF and ADC labels only the first line will actually be printed on the label. DDU labels will have the complete address printed -- including street address and city, state, zip.
+
+For more information, consult [<%= config[:fast_usps] %>](<%= config[:fast_usps] %>)
+
+Parameter | Default | Description
+--------- | ------- | -----------
+enclosed_mail_class | (required) | Enclosed mail class. One of MixedMail, PriorityMail, ParcelSelectMail, ParcelSelectLightweightMail, LibraryMail, MediaMail, BoundPrintedMatterMail, RetailGround, MarketingMail, ParcelReturnServiceMail, MatterForTheBlindMail, Periodicals.
+enclosed_shape | (required) | Enclosed mailpiece shape. One of Parcels, Letters, Flats.
+facility_type | (required) | Destination processing facility type. One of SCF, DDU, ADC, ASF, NDC.
+
+
+
+### gss Label Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+mail_class | (required) | Mail class. One of ePacket, PriorityInternational, PriorityExpressInternational, FirstClassInternational, InternationalPriorityAirmail, InternationalSurfaceAirLift.
+location_id | (required) | The location ID as provided by the GSS program.
+
+### ups Label Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+service | (required) | Service. One of 2Day, 2DayAM, ExpressSaver, Ground, GroundHomeDelivery, FirstOvernight, InternationalEconomy, InternationalFirst, InternationalPriority, PriorityOvernight, StandardOvernight.
+packaging_type | (required) | Packaging Type. One of Box, Envelope, Pak, Tube, Custom.
+dropoff_type | (required) | Dropoff Type. One of RegularPickup, RequestCourier, DropBox, BusinessServiceCenter, Station.
+cod_special_service | (null/empty) | COD special service. See details [here](#ups-cod_package_option-query-parameters).
+signature_special_service | (null/empty) | Signature special service. See details [here](#ups-delcon_package_option-query-parameters).
+
+### fedex Label Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+service | (required) | Service. One of NextDayAir, 2ndDayAir, Ground, 3DaySelect, NextDayAirSaver, NextDayAirEarly, 2ndDayAirAM, WorldwideExpress, WorldwideExpedited, Standard, WorldwideExpressPlus, Saver.
+packaging_type | (required) | Packaging Type. One of Letter, Package, Tube, Pak, SmallExpressBox, MediumExpressBox, LargeExpressBox.
+cod_package_option | (null/empty) | COD package options. See details [here](#fedex-cod_special_service-query-parameters).
+delcon_package_option | (null/empty) | Delivery Confirmation package options. See details [here](#fedex-signature_special_service-query-parameters).
+
+### customs_form Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+contents_type | (required) | Contents type. One of "Documents", "Gift", "Merchandise", "ReturnedGoods", "Sample", "HumanitarianDonation", "DangerousGoods", "Other".
+restriction_type | (null/empty) | Restriction type. One of "Quarantine", "SanitaryInspection", "PhytosanitaryInspection", "Other", "None".
+restriction_comments | (null/empty) | Restriction comments.
+senders_customs_reference | (null/empty) | Sender's customs reference.
+importers_customs_reference | (null/empty) | Importer's customs reference.
+importers_customs_reference_type | (null/empty) | Importer's customs reference type. One of "TaxCode", "VATNumber", "ImporterCode".
+license_number | (null/empty) | License number.
+certificate_number | (null/empty) | Certificate number.
+invoice_number | (null/empty) | Invoice number.
+customs_signator | (required) | First and last name of person responsible for shipment.
+importers_contact | (null/empty) | Importer's contact phone number.
+pfc_itn | (null/empty) | Proof of filing citation ITN number.
+insured_number | (null/empty) | Insured reference number.
+customs_items | (required) | Customs items collection. See details [here](#customs_item-query-parameters).
+
+### customs_item Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+description | (required) | Description.
+quantity | (required) | Quantity.
+weight | (required) | Weight.
+weight_unit | (required) | Weight unit. One of oz, lb, g, kg.
+value | (required) | Value.
+hs_tariff_number | (null/empty) | HTS code.
+origin_country_code | US | Origin iso country code.
+
+### UPS cod_package_option Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+type | (required) | Type. One of Cash, MoneyOrder, Check.
+value | (required) | Value.
+
+### UPS delcon_package_option Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+type | (required) | Type. One of Regular, SignatureRequired, AdultSignatureRequired.
+
+### FedEx cod_special_service Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+value | (required) | Value.
+type | (required) | Type. One of Any, Cash, CompanyCheck, GuaranteedFunds, PersonalCheck.
+
+### FedEx signature_special_service Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+type | (required) | Type. One of Adult, Direct, Indirect, NoSignatureRequired, ServiceDefault.
+
+## Get (Reprint) a Shipping Label
+
+<aside class="notice">
+  Not available for UPS.
+</aside>
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/labels/9210890188666700000058"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "request_id" : "AQX90000000234",
+  "status" : "created",
+  "postmark_date":"2018-03-22T23:37:05-07:00",
+  "postage_amount" : 10.44,
+  "fees_amount" : 2.35,
+  "total_amount" : 12.79,
+  "usps": {
+    "tracking_numbers" : ["9210890188666700000058"],
+    "pricing" : "Commercial Plus",
+    "fees" : [{ "name" : "Signature Confirmation", "fee" : 2.35 }],
+    "zone": 1
+  },
+  "base64_labels" : ["iVBORw0KGgoAAAA..."]
+}
+```
+
+### HTTP Request
+
+`GET <%= config[:production_api_url] %>/labels/[tracking_number]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+tracking_number | (required) | Tracking number.
+
+## Delete (Void) a Shipping Label
+
+```shell
+curl -u user@email.com:password -X DELETE --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/labels/9210890188666700000058"
+```
+
+> The above command does not return any JSON.
+
+### HTTP Request
+
+`DELETE <%= config[:production_api_url] %>/labels/[tracking_number]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+tracking_number | (required) | Tracking number.
+
+## Get Shipping Labels
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/labels?start_date=2018-03-21T00:00:00-07:00&end_date=2018-03-23T00:00:00-07:00"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+  {
+    "request_id" : "AQX90000000234",
+    "status" : "created",
+    "postmark_date":"2018-03-22T23:37:05-07:00",
+    "postage_amount" : 10.44,
+    "fees_amount" : 2.35,
+    "total_amount" : 12.79,
+    "usps": {
+      "tracking_numbers" : ["9210890188666700000058"],
+      "pricing" : "Commercial Plus",
+      "fees" : [{ "name" : "Signature Confirmation", "fee" : 2.35 }],
+      "zone": 1
+    }
+  },
+  {
+    "request_id": null,
+    "status" : "voided",
+    "postmark_date":"2018-03-22T23:37:05-07:00",
+    "postage_amount": 5.6,
+    "fees_amount": 0,
+    "total_amount": 5.6,
+    "usps": {
+      "tracking_numbers": ["9205590188666700000406"],
+      "pricing": "Commercial Plus",
+      "fees": [{ "name": "USPS Tracking", "fee": 0 }],
+      "zone": 2
+    }
+  }
+]
+```
+
+### HTTP Request
+
+`GET <%= config[:production_api_url] %>/labels?start_date=[start_date]&end_date=[end_date]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+start_date | (conditional) | Start date. UTC format. Mutually exclusive with request_id and status.
+end_date | (conditional) | End date. UTC format. Mutually exclusive with request_id and status.
+request_id | (conditional) | Request ID (used when creating the label). Mutually exclusive with date range and status.
+status | (conditional) | Label status. Mutually exclusive with date range and request_id.
+page_size | 25 | Page size.
+page_number | 1 | Page number.
