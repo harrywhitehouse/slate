@@ -28,8 +28,9 @@ If you'd prefer to use Docker, instructions are available [in the wiki](https://
 # Deployment
 
 1. `bundle exec middleman build --clean`
-2. Go to [epostage blob storage in Azure](https://portal.azure.com/#blade/Microsoft_Azure_Storage/ContainerMenuBlade/overview/storageAccountId/%2Fsubscriptions%2Fb7aba27f-2a6b-4e32-88b7-67483527acf2%2FresourceGroups%2Fepostagegeneralstorage%2Fproviders%2FMicrosoft.Storage%2FstorageAccounts%2Fepostagestorage/path/docs/etag/%220x8D592EAA766917C%22)
-3. Click the "Upload" link at the top
-4. Select your /slate/build/index.html (from step 1)
-5. Enable "Overwrite if file already exist" checkbox
-6. Click the "Upload" button
+2. Go to [epostage blob storage in Azure](https://portal.azure.com/#@myib.com/resource/subscriptions/b7aba27f-2a6b-4e32-88b7-67483527acf2/resourceGroups/epostagegeneralstorage/providers/Microsoft.Storage/storageAccounts/epostagestorage/overview)
+3. Click "Blobs" > "docs"
+4. Click the "Upload" link at the top
+5. Select your /slate/build/index.html (from step 1)
+6. Enable "Overwrite if file already exist" checkbox
+7. Click the "Upload" button
