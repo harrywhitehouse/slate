@@ -110,8 +110,8 @@ sms | (null/empty) | Sms phone number.
 line1 | (required) | Address line 1.
 line2 | (null/empty) | Address line 2.
 line3 | (null/empty) | Address line 3.
-city | (required) | City.
-state_province | (conditional) | State/province. Required for USPS carrier.
+city | (conditional) | City. Required when postal code is not provided for domestic USPS labels.
+state_province | (conditional) | State/province. Required when postal code is not provided for domestic USPS labels.
 postal_code | (conditional) | Postal code. Zip code for USPS carrier. Required for USPS carrier.
 country_code | (required) | Iso country code.
 
