@@ -205,12 +205,12 @@ curl -u user@email.com:password -X GET --header "Content-Type: application/json"
 
 ### HTTP Request
 
-`GET <%= config[:production_api_url] %>/address/possible_addresses?zip5=[zip5]&primary=[primary number]&street_name=[street name]`
+`GET <%= config[:production_api_url] %>/address/possible_addresses?zip5=[zip5]&primary=[primary]&street_name=[street_name]`
 
 ### Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
 zip5 | (required) | Zip 5.
-primary number | (required) | Primary street number.
-street name | (null/empty) | Street name. Could be null, incomplete (e.g. "H") or full (e.g. "High")
+primary | (required) | Primary street number.
+street_name | (null/empty) | Street name. Could be null, incomplete (e.g. "H") or full (e.g. "High")
