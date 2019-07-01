@@ -129,11 +129,11 @@ Parameter | Default | Description
 --------- | ------- | -----------
 mail_class | (required) | Mail class. One of Priority, Express, FirstClass, ParcelSelect, ParcelSelectLightweight, LibraryMail, MediaMail, BoundPrintedMatter, FirstClassInternational, PriorityInternational, PriorityExpressInternational.
 shape | (required) | One of Parcel, Flat, FlatRateEnvelope, LegalFlatRateEnvelope, PaddedFlatRateEnvelope, SmallFlatRateBox, MediumFlatRateBox, LargeFlatRateBox, RegionalRateBoxA, RegionalRateBoxB. <strong>The following shapes are valid only for PMOD:</strong> Sack, FullTrayBox, HalfTrayBox, FlatTubBox, ExtendedManagedMail (aka EMMTray)
-services | (null/empty) | Services. One of OpenAndDistribute, Fragile, Perishable, LiveAnimal, HazMat, CrematedRemains, Certified, Restricted, Adult, COD, SignatureConfirmation, Insurance, Registered, ReturnReceipt, ReturnReceiptElectronic, ReturnReceiptMerchandise, HoldForPickup.
+services | (null) | Services. If this field is present, it cannot be empty. One of OpenAndDistribute, Fragile, Perishable, LiveAnimal, HazMat, CrematedRemains, Certified, Restricted, Adult, COD, SignatureConfirmation, Insurance, Registered, ReturnReceipt, ReturnReceiptElectronic, ReturnReceiptMerchandise, HoldForPickup.
 image_size | 4x6 | Image size. One of 4x6, 6x4.
 po_zip_code | (see Description) | Induction zip code. If not provided, it defaults to the mailpiece from address postal code.
-presort_level | (conditional) | Presort level. Required for Library Mail, Media Mail, Parcel Select Destination Entry and Parcel Select Lightweight. One of None, 5-Digit, 3-Digit, SCF, NDC, MixedNDC, DDU, Basic.
-entry_facility | (conditional) | Entry facility. Required for Parcel Select Destination Entry and Parcel Select Lightweight. One of None, DNDC, DSCF, DDU.
+presort_level | (conditional) | Presort level. If this field is present, it cannot be empty. Required for Library Mail, Media Mail, Parcel Select Destination Entry and Parcel Select Lightweight. One of None, 5-Digit, 3-Digit, SCF, NDC, MixedNDC, DDU, Basic.
+entry_facility | (conditional) | Entry facility. If this field is present, it cannot be empty. Required for Parcel Select Destination Entry and Parcel Select Lightweight. One of None, DNDC, DSCF, DDU.
 softpack | (conditional) | Boolean softpack indicator. Applies ONLY to Priority Mail cubic.
 open_and_distribute | (conditional) | Required when services includes OpenAndDistribute. See details [here](#usps-open_and_distribute-query-parameters).
 
