@@ -34,3 +34,15 @@ If you'd prefer to use Docker, instructions are available [in the wiki](https://
 5. Select your /slate/build/index.html (from step 1)
 6. Enable "Overwrite if file already exist" checkbox
 7. Click the "Upload" button
+
+# Clear CDN cache
+
+1. Access the Azure Portal: https://portal.azure.com
+2. Select 'All Resources' from the left side menu dock
+3. In the 'Filter by name…' box, type: epostagewebsitedocsProfile
+4. Click on the epostagewebsitedocsProfile which is of type 'CDN Profile'
+5. On the Overview tab, select Purge
+6. On the Purge page, select the Endpoint: myibservicesdocCDN.azureedge.net
+7. To purge the entire cache, select Purge all check box, and then Purge button
+8. Or to purge a specific path, enter path i.e. /help/chapter1 and then Purge button
+9. The pages/site will be reloaded to the cache upon next access. This could take a few minutes to clear.

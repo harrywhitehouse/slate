@@ -1,0 +1,53 @@
+# Tracking
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/track/9210890188666700000058"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+    {
+        "status": "Delivered, In/At Mailbox",
+        "location": {
+            "city": "SANTA MONICA",
+            "state": "CA",
+            "zip": "90401",
+            "country": "USA"
+        },
+        "timestamp": "2019-06-26T11:30:00.000"
+    },
+    {
+        "status": "Out for Delivery",
+        "location": {
+            "city": "SANTA MONICA",
+            "state": "CA",
+            "zip": "90401",
+            "country": "USA"
+        },
+        "timestamp": "2019-06-26T09:27:00.000"
+    },
+    {
+        "status": "Arrived at Post Office",
+        "location": {
+            "city": "SANTA MONICA",
+            "state": "CA",
+            "zip": "90401",
+            "country": "USA"
+        },
+        "timestamp": "2019-06-26T08:02:00.000"
+    },
+    ...
+]
+```
+
+### HTTP Request
+
+`GET <%= config[:production_api_url] %>/track/[tracking_number]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+tracking_number | (required) | Tracking number.
