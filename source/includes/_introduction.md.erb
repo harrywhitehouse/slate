@@ -70,11 +70,11 @@ The RESTful routes that return array of entities are paginated. The `page_number
 curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/labels?request_id=123&page_number=2&page_size=10"
 ```
 
-> The above command returns headers structured like this:
+> The above command returns a response with the following HTTP headers:
 
 ```json
-Current-Page →2
-Page-Count →167
-Page-Size →10
-Total-Count-Of-Items →1667
+Current-Page: 2
+Page-Count: 167
+Page-Size: 10
+Total-Count-Of-Items: 1667
 ```
