@@ -1,0 +1,50 @@
+## Validation
+
+```shell
+curl -u user@email.com:password -X POST --header "Content-Type: application/json" --header "Accept: application/json" -d "{
+  \"line1\" : \"247 High St\",
+  \"city\" : \"Palo X\",
+  \"state_province\" : \"CA\",
+  \"postal_code\" : \"94301\",
+  \"country_code\": \"US\"
+}" "<%= config[:production_api_url] %>/address/validate"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "line1" : "247 HIGH ST",
+  "line2" : "",
+  "line3" : "",
+  "last_line" : "PALO ALTO CA 94301-1041",
+  "city" : "PALO ALTO",
+  "state_province" : "CA",
+  "zip5" : "94301",
+  "zip4" : "1041",
+  "dpbc" : "476",
+  "record_type" : "S",
+  "rdi" : "B",
+  "dpv" : "AABB",
+  "dpv_comment" : " ",
+  "carrier_route" : "C001",
+  "address_exists" : " "
+}
+```
+
+### HTTP Request
+
+`POST <%= config[:production_api_url] %>/address/validate`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+company_name | (null/empty) | Company name.
+line1 | (required) | Address line 1.
+line2 | (null/empty) | Address line 2.
+line3 | (null/empty) | Address line 3.
+city | (null/empty) | City.
+state_province | (null/empty) | State/province.
+postal_code | (null/empty) | Postal code.
+country_code | (required) | Iso country code.

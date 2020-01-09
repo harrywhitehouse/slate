@@ -1,0 +1,76 @@
+## Resolve Multiple
+
+```shell
+curl -u user@email.com:password -X POST --header "Content-Type: application/json" --header "Accept: application/json" -d "{
+  \"line1\" : \"525 University Ave\",
+  \"city\" : \"Palo Alto\",
+  \"state_province\" : \"CA\",
+  \"postal_code\" : \"94301\"
+}" "<%= config[:production_api_url] %>/address/resolve_multiple"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+  {
+    "primary_high" : "0000000525",
+    "primary_low" : "0000000525",
+    "secondary_high" : "A70",
+    "secondary_low" : "A70",
+    "secondary_name" : "",
+    "street_name" : "UNIVERSITY",
+    "pre_direction" : "",
+    "post_direction" : "",
+    "suffix" : "AVE",
+    "zip_code" : "94301",
+    "addon_low" : "1924",
+    "addon_high" : "1924",
+    "unit" : "STE",
+    "record_type" : "H",
+    "state_abbreviation" : null,
+    "county_number" : "085",
+    "carrier_route" : "C011"
+  },
+  {
+    "primary_high" : "0000000525",
+    "primary_low" : "0000000525",
+    "secondary_high" : "A100",
+    "secondary_low" : "A100",
+    "secondary_name" : "",
+    "street_name" : "UNIVERSITY",
+    "pre_direction" : "",
+    "post_direction" : "",
+    "suffix" : "AVE",
+    "zip_code" : "94301",
+    "addon_low" : "1925",
+    "addon_high" : "1925",
+    "unit" : "STE",
+    "record_type" : "H",
+    "state_abbreviation" : null,
+    "county_number" : "085",
+    "carrier_route" : "C011"
+  },
+  {
+    "primary_high" : "0000000525",
+    "primary_low" : "0000000525",
+    ...
+  },
+  ...
+]
+```
+
+### HTTP Request
+
+`POST <%= config[:production_api_url] %>/address/resolve_multiple`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+line1 | (required) | Address line 1.
+line2 | (null/empty) | Address line 2.
+line3 | (null/empty) | Address line 3.
+city | (null/empty) | City.
+state_province | (null/empty) | State/province.
+postal_code | (null/empty) | Postal code.

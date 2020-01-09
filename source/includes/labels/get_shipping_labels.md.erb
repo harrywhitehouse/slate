@@ -1,0 +1,64 @@
+## Get Shipping Labels
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/labels?start_date=2018-03-21T00:00:00-07:00&end_date=2018-03-23T00:00:00-07:00"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+  {
+    "request_id" : "AQX90000000234",
+    "status" : "created",
+    "postmark_date":"2018-03-22T23:37:05-07:00",
+    "postage_amount" : 10.44,
+    "fees_amount" : 2.35,
+    "total_amount" : 12.79,
+    "usps": {
+      "tracking_numbers" : ["9210890188666700000058"],
+      "pricing" : "Commercial Plus",
+      "fees" : [{ "name" : "Signature Confirmation", "fee" : 2.35 }],
+      "zone": 1
+    }
+  },
+  {
+    "request_id": null,
+    "status" : "voided",
+    "postmark_date":"2018-03-22T23:37:05-07:00",
+    "postage_amount": 5.6,
+    "fees_amount": 0,
+    "total_amount": 5.6,
+    "usps": {
+      "tracking_numbers": ["9205590188666700000406"],
+      "pricing": "Commercial Plus",
+      "fees": [{ "name": "USPS Tracking", "fee": 0 }],
+      "zone": 2
+    }
+  }
+]
+```
+
+### HTTP Request
+
+`GET <%= config[:production_api_url] %>/labels?start_date=[start_date]&end_date=[end_date]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+start_date | (conditional) | Start date. UTC format. Mutually exclusive with request_id and status.
+end_date | (conditional) | End date. UTC format. Mutually exclusive with request_id and status.
+request_id | (conditional) | Request ID (used when creating the label). Mutually exclusive with date range and status.
+status | (conditional) | Label status. Mutually exclusive with date range and request_id.
+page_size | 25 | Page size.
+page_number | 1 | Page number.
+
+### Response Headers
+
+Header | Example | Description
+--------- | ------- | -----------
+current-page | 1 | Current page of data in the response body.
+page-count | 1 | Total pages count.
+page-size | 25 | Page size. Items per page.
+total-count-of-items | 2 | Total items count.

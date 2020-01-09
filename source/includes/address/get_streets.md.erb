@@ -1,0 +1,31 @@
+## Get Streets
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/address/streets?zip5=94301"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+  "ADDISON AVE",
+  "ALMA ST",
+  "ANTON CT",
+  "ASHBY DR",
+  "BOYCE AVE",
+  "BRYANT CT",
+  "BRYANT ST",
+  "BYRON ST",
+  ...
+]
+```
+
+### HTTP Request
+
+`GET <%= config[:production_api_url] %>/address/streets?zip5=[zip5]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+zip5 | (required) | Zip 5.

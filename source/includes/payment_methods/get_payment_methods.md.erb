@@ -1,19 +1,3 @@
-# Payment Methods
-
-## Create a Payment Method
-
-To create a payment method, please visit [<%= config[:production_website_url] %>](<%= config[:production_payment_details_url] %>). It is not available via API.
-
-## Delete a Payment Method
-
-```shell
-curl -u user@email.com:password -X DELETE --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/payment_methods/97d391d0-03ed-4d67-93c4-98c4543"
-```
-
-### HTTP Request
-
-`DELETE <%= config[:production_api_url] %>/payment_methods/[payment_method_id]`
-
 ## Get Payment Methods
 
 ```shell

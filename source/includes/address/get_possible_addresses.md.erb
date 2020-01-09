@@ -1,0 +1,27 @@
+## Get Possible Addresses
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/address/possible_addresses?zip5=94301&primary=247&street_name=H"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+  "247 HAMILTON AVE",
+  "247 HAMILTON CT",
+  "247 HIGH ST"
+]
+```
+
+### HTTP Request
+
+`GET <%= config[:production_api_url] %>/address/possible_addresses?zip5=[zip5]&primary=[primary]&street_name=[street_name]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+zip5 | (required) | Zip 5.
+primary | (required) | Primary street number.
+street_name | (null/empty) | Street name. Could be null, incomplete (e.g. "H") or full (e.g. "High")

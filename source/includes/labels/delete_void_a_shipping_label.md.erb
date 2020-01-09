@@ -1,0 +1,17 @@
+## Delete (Void) a Shipping Label
+
+```shell
+curl -u user@email.com:password -X DELETE --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/labels/9210890188666700000058"
+```
+
+> The above command does not return any JSON.
+
+### HTTP Request
+
+`DELETE <%= config[:production_api_url] %>/labels/[tracking_number]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+tracking_number | (required) | Tracking number.

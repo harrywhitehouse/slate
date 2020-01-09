@@ -1,0 +1,34 @@
+## Get (Reprint) a Manifest
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/manifests/9275090188665400000024"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "request_id" : "MANX000000000C1",
+  "usps" :
+  {
+    "manifest_number" : "9275090188665400000024",
+    "priority_count" : 1,
+    "express_count" : 0,
+    "pmi_count" : 0,
+    "emi_count" : 0,
+    "gxg_count" : 0,
+    "other_count" : 0,
+    "base64_manifest" : "iVBORw0KGgoAAA..."
+  }
+}
+```
+
+### HTTP Request
+
+`GET <%= config[:production_api_url] %>/manifests/[manifest_number]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+manifest_number | (required) | Manifest number.

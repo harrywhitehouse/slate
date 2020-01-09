@@ -1,0 +1,9 @@
+## Delete a Payment Method
+
+```shell
+curl -u user@email.com:password -X DELETE --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/payment_methods/97d391d0-03ed-4d67-93c4-98c4543"
+```
+
+### HTTP Request
+
+`DELETE <%= config[:production_api_url] %>/payment_methods/[payment_method_id]`

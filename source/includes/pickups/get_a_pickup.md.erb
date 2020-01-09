@@ -1,0 +1,57 @@
+## Get a Pickup
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/pickups/[id]"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "id": "59bdc43c-ed18-4539-9bd7-77de802747b3",
+  "weight": 3.0,
+  "weight_unit": "lb",
+  "package_location": "Front Door",
+  "special_instructions": "Packages are behind the screen door",
+  "usps": {
+    "package_data": [
+      {
+        "mail_class": "Express",
+        "package_count": 3
+      },
+      {
+        "mail_class": "Priority",
+        "package_count": 2
+      }
+    ],
+    "confirmation_number": "WTC271310058",
+    "pickup_date": "2019-06-20",
+    "carrier_route": "C001"
+  },
+  "address": {
+    "first_name": "John",
+    "middle_name": null,
+    "last_name": "Doe",
+    "company_name": null,
+    "line1": "247 High St",
+    "line2": null,
+    "line3": null,
+    "city": "Palo Alto",
+    "state_province": "CA",
+    "postal_code": "94301",
+    "email": "user@example.com",
+    "phone_number": "6503951916",
+    "iso_country_code": "US"
+  }
+}
+```
+
+### HTTP Request
+
+`GET <%= config[:production_api_url] %>/pickups/[id]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+id | (required) | Pickup ID which was returned by the POST method.

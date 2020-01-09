@@ -1,0 +1,69 @@
+## Create a Manifest
+
+```shell
+curl -u user@email.com:password -X POST --header "Content-Type: application/json" --header "Accept: application/json" -d "{
+  \"request_id\": \"MANX000000000C1\",
+  \"image_format\": \"png\",
+  \"image_resolution\" : 300,
+  \"usps\": { }
+}" "<%= config[:production_api_url] %>/manifests"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "request_id" : "MANX000000000C1",
+  "usps" : [
+    {
+      "manifest_number" : "9275090188665400000024",
+      "priority_count" : 1,
+      "express_count" : 0,
+      "pmi_count" : 0,
+      "emi_count" : 0,
+      "gxg_count" : 0,
+      "other_count" : 0,
+      "base64_manifest" : "iVBORw0KGgoAAA..."
+    },
+  ]
+}
+```
+
+### HTTP Request
+
+`POST <%= config[:production_api_url] %>/manifests`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+request_id | (null/empty) | Request ID. Used by API developers to match requests and responses. Echoed back in the request_id tag of the response.
+image_format | (required) | Image format. One of png, pdf, svg, zpl.
+image_resolution | 300 | Image resolution in DPI. One of 150, 203, 300, 600.
+usps | (null/empty) | USPS carrier data. See details [here](#usps-manifest-query-parameters).
+
+### USPS Manifest Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+induction_address | (null/empty) | Induction address. Defaults to the user's account address. See details [here](#usps-contact-address-query-parameters).
+tracking_numbers | (null/empty) | Tracking numbers collection to be included in this manifest. If omitted, all tracking numbers not included in the previous manifest are returned.
+
+### USPS Contact Address Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+company_name | (conditional) | Company name. Required when first name and last name are not provided.
+first_name | (conditional) | First name. Required when company name is not provided.
+middle_name | (null/empty) | Middle name.
+last_name | (conditional) | Last name. Required when company name is not provided.
+phone_number | (null/empty) | Phone number.
+email | (null/empty) | Email.
+sms | (null/empty) | Sms phone number.
+line1 | (required) | Address line 1.
+line2 | (null/empty) | Address line 2.
+line3 | (null/empty) | Address line 3.
+city | (required) | City.
+state_province | (conditional) | State/province. Required for USPS carrier.
+postal_code | (conditional) | Postal code. Zip code for USPS carrier. Required for USPS carrier.
+country_code | (required) | Iso country code.

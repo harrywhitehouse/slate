@@ -1,0 +1,39 @@
+## Get (Reprint) a Shipping Label
+
+<aside class="notice">
+  Not available for UPS.
+</aside>
+
+```shell
+curl -u user@email.com:password -X GET --header "Content-Type: application/json" --header "Accept: application/json" "<%= config[:production_api_url] %>/labels/9210890188666700000058"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "request_id" : "AQX90000000234",
+  "status" : "created",
+  "postmark_date":"2018-03-22T23:37:05-07:00",
+  "postage_amount" : 10.44,
+  "fees_amount" : 2.35,
+  "total_amount" : 12.79,
+  "usps": {
+    "tracking_numbers" : ["9210890188666700000058"],
+    "pricing" : "Commercial Plus",
+    "fees" : [{ "name" : "Signature Confirmation", "fee" : 2.35 }],
+    "zone": 1
+  },
+  "base64_labels" : ["iVBORw0KGgoAAAA..."]
+}
+```
+
+### HTTP Request
+
+`GET <%= config[:production_api_url] %>/labels/[tracking_number]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+tracking_number | (required) | Tracking number.

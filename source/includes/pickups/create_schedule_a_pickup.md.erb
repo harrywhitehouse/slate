@@ -1,0 +1,126 @@
+## Create (Schedule) a Pickup
+
+Schedules a package pickup and provides the user a confirmation number for the scheduled pickup. Your carrier will pick up your packages on the next USPS delivery day (Monday through Saturday, excluding holidays) **for free**. There must be at least one Priority Mail Express package or one Priority Mail package or one international package or one returned merchandise package for a valid request.
+
+```shell
+curl -u user@email.com:password -X POST --header "Content-Type: application/json" --header "Accept: application/json" -d "{
+  \"pickup\": {
+    \"address\": {
+      \"first_name\": \"John\",
+      \"last_name\": \"Doe\",
+      \"line1\": \"247 High St\",
+      \"city\": \"Palo Alto\",
+      \"state_province\": \"CA\",
+      \"postal_code\": \"94301\",
+      \"email\": \"user@example.com\",
+      \"phone_number\": \"6503951916\"
+      \"country_code\": \"US\"
+    },
+    \"package_location\": \"Front Door\",
+    \"special_instructions\": \"Packages are behind the screen door\",
+    \"weight\": 3,
+    \"weight_unit\": \"lb\",
+    \"usps\": {
+      \"package_data\": [
+        {
+          \"mail_class\": \"Express\",
+          \"package_count\": 3
+        },
+        {
+          \"mail_class\": \"Priority\",
+          \"package_count\": 2
+        }
+      ]
+    }
+  }
+}" "<%= config[:production_api_url] %>/pickups"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "id": "59bdc43c-ed18-4539-9bd7-77de802747b3",
+  "weight": 3.0,
+  "weight_unit": "lb",
+  "package_location": "Front Door",
+  "special_instructions": "Packages are behind the screen door",
+  "usps": {
+    "package_data": [
+      {
+        "mail_class": "Express",
+        "package_count": 3
+      },
+      {
+        "mail_class": "Priority",
+        "package_count": 2
+      }
+    ],
+    "confirmation_number": "WTC271310058",
+    "pickup_date": "2019-06-20",
+    "carrier_route": "C001"
+  },
+  "address": {
+    "first_name": "John",
+    "middle_name": null,
+    "last_name": "Doe",
+    "company_name": null,
+    "line1": "247 High St",
+    "line2": null,
+    "line3": null,
+    "city": "Palo Alto",
+    "state_province": "CA",
+    "postal_code": "94301",
+    "email": "user@example.com",
+    "phone_number": "6503951916",
+    "iso_country_code": "US"
+  }
+}
+```
+
+### HTTP Request
+
+`POST <%= config[:production_api_url] %>/pickups`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+address | (required) | Pickup address. See details [here](#address-pickup-query-parameters).
+package_location | (required) | Package location. One of "Front Door", "Back Door", "Side Door", "Knock on Door/Ring Bell", "Mail Room", "Office", "Reception", "In/At Mailbox", "Other".
+special_instructions | (null/empty/required) | Required when `package_location` is "Other".
+weight | (required) | Estimated aggregate weight of all packages being picked up.
+weight_unit | (required) | Weight unit. One of oz, lb, g, kg.
+usps | (required) | USPS carrier data. See details [here](#usps-pickup-query-parameters).
+
+### address Pickup Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+company_name | (conditional) | Company name. Required when first name and last name are not provided.
+first_name | (conditional) | First name. Required when company name is not provided.
+middle_name | (null/empty) | Middle name.
+last_name | (conditional) | Last name. Required when company name is not provided.
+phone_number | (null/empty/required) | Phone number. Either `phone_number` or `sms` is required.
+email | (null/empty) | Email.
+sms | (null/empty/required) | Sms phone number. Either `sms` or `phone_number` is required.
+line1 | (required) | Address line 1.
+line2 | (null/empty) | Address line 2.
+line3 | (null/empty) | Address line 3.
+city | (required) | City.
+state_province | (conditional) | State/province. Required for USPS carrier.
+postal_code | (conditional) | Postal code. Zip code for USPS carrier. Required for USPS carrier.
+country_code | (required) | Iso country code.
+
+### usps Pickup Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+package_data | (required) | Package collection. See details [here](#package_data-pickup-query-parameters)
+
+### package_data Pickup Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+mail_class | (required) | Mail class. One of Priority, Express, FirstClass, ParcelSelect, ParcelSelectLightweight, LibraryMail, MediaMail, BoundPrintedMatter, FirstClassInternational, PriorityInternational, PriorityExpressInternational.
+package_count | (required) | The number of packages for the accompanying `mail_class`.
