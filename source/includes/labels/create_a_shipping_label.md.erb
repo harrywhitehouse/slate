@@ -74,9 +74,13 @@ dimensions | (null/empty) | Dimensions. See details [here](#dimensions-query-par
 dimensions_unit | (required if dimensions provided) | Dimensions unit. One of in, ft, mm, cm, m.
 value | (null/empty) | Total package value. Required for most international (customs form) requests.
 non_delivery_option | Return | Non-delivery option. One of Abandon, Return.
-postmark_date | (UTC current date time) | UTC postmark date.
+postmark_date | (UTC current date time) | UTC postmark date. Must be 30 days or less than the create date.
 image_format | (required) | Image format. One of png, pdf, svg, zpl, gif.
 image_resolution | 300 | Image resolution in DPI. One of 150, 203, 300, 600.
+page_width | (optional) | Pdf page width in inches. Available only for pdf.
+page_height | (optional) | Pdf page height in inches. Available only for pdf.
+left_margin | (optional) | Pdf page left margin in inches. Available only for pdf.
+top_margin | (optional) | Pdf page top margin in inches. Available only for pdf.
 customs_form | (null/empty) | Customs form for military (APO/FPO/DPO) and international shipping. See details [here](#customs_form-query-parameters).
 usps | (null/empty) | USPS carrier data. See details [here](#usps-label-query-parameters).
 gss | (null/empty) | GSS program data. See details [here](#gss-label-query-parameters).

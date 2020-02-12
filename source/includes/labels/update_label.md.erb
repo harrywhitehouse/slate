@@ -1,0 +1,48 @@
+## Update a Shipping Label
+
+Only certain mailpiece properties can be updated (e.g. postmark date, weight and dimensions). The properties that cannot change will remain the same as in the intial request (e.g. mail class). A label cannot be updated after it was manifested or refunded (must be in created status). The new price could be higher or lower than the initial price. For Metered accounts, we will increase/decrease the account balance based on the difference. For Invoiced accounts, we will adjust for the price difference in the next invoice. eVS accounts will not experience any price changes since USPS billing is done at manifest time.
+
+```shell
+curl -u user@email.com:password -X PUT --header "Content-Type: application/json" --header "Accept: application/json" -d "{
+  \"postmark_date\" : \"2019-08-01T00:00:00+00:00\",
+  \"weight\": 1,
+  \"weight_unit\": "lb",
+  \"dimensions\" : { \"length\" : 5, \"height\" : 5, \"width\" : 5 },
+  \"dimensions_unit\" : \"in\"
+}" "<%= config[:production_api_url] %>/labels/9210890188666700000058"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "request_id" : "AQX90000000234",
+  "status" : "created",
+  "postmark_date":"2019-08-01T00:00:00+00:00",
+  "postage_amount" : 27.28,
+  "fees_amount" : 2.35,
+  "total_amount" : 12.79,
+  "usps": {
+    "tracking_numbers" : ["9210890188666700000058"],
+    "pricing" : "Commercial Plus",
+    "fees" : [{ "name" : "Signature Confirmation", "fee" : 2.35 }],
+    "zone": 1
+  },
+  "base64_labels" : ["iVBORw0KGgoAAAA..."]
+}
+```
+
+### HTTP Request
+
+`PUT <%= config[:production_api_url] %>/labels/[tracking_number]`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+tracking_number | (required) | Tracking number.
+postmark_date | (optional) | UTC postmark date. Must be 30 days or less than the create date.
+weight | (optional) | Weight.
+weight_unit | (optional) | Weight unit. One of oz, lb, g, kg.
+dimensions | (optional) | Dimensions.
+dimensions_unit | (required if dimensions provided) | Dimensions unit. One of in, ft, mm, cm, m.

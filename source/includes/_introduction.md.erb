@@ -1,8 +1,8 @@
 # Introduction
 
-The <%= config[:product_name] %> API allows developers to integrate shipping labels and fullfillment within their e-commerce businesses and online marketplaces. The API offers price comparison, label printing, manifest generation, transactions details and tracking features. The guideline below will help get you started. For additional help, please email us at [<%= config[:support_email] %>](mailto:<%= config[:support_email] %>).
+The <%= config[:product_name] %> API allows developers to integrate shipping labels and fulfillment within their e-commerce businesses and online marketplaces. The API offers price comparison, label printing, manifest generation, transactions details and tracking features. The guideline below will help get you started. For additional help, please email us at [<%= config[:support_email] %>](mailto:<%= config[:support_email] %>).
 
-To create an account, please visit [<%= config[:production_website_url] %>](<%= config[:production_registration_url] %>) and sign up for a free account. You'll use the same email address and password to submit API requests (see below). Before you can start printing live labels, you'll need to (1) verify your email address, (2) verify your SMS, (3) fill in your full mailing address and (4) add a valid credit card to our system.
+To create an account, please visit [<%= config[:production_website_url] %>](<%= config[:production_registration_url] %>) and sign up for a free account. You'll use the same email address and password to submit API requests (see below). Before you can start printing live labels, you'll need to (1) verify your email address, (2) verify your SMS, (3) fill in your full mailing address and (4) add a valid credit card to our system. In a short time, one of our agents will call you at the SMS number provided to verify your identity.
 
 ## Carriers and Services
 
@@ -18,15 +18,39 @@ For high volume shippers, please contact us for possible domestic and internatio
 
 ## Billing
 
-We support several payment methods. By default, accounts are set up for "meter" payments. You can add funds to your meter using different payment methods (credit card, Paypal or by mailing us a check). As you print shipping labels via the Blue website or the Blue API, the cost of the label is deducted from your account/meter balance. You can turn on the meter auto-refill flag to ensure printing labels without any downtime. For high volume shippers who are also trusted and vetted partners, we offer invoice billing.
+We support several payment methods. By default, accounts are set up for "meter" payments. You can add funds to your meter using different payment methods (credit card, ACH, wire transfer or by mailing us a check). As you print shipping labels via the Blue website or the Blue API, the cost of the label is deducted from your account/meter balance. You can turn on the meter auto-refill flag to ensure printing labels without any downtime. For high volume shippers who are also trusted and vetted partners, we offer invoice billing.
+
+eVS accounts handle billing directly with the USPS including refunds and adjustments. A platform usage fee is applied to eVS accounts via invoice.
 
 ## Manifesting
 
-Manifesting can be performed explicitly (for one or all unmanifested mailpieces) via the manifesting API or by using the Blue website. International Bridge manifests "on behalf of the user" at the end of the day at 11:55PM PST based on the mailpiece's postmark date. The manifest response contains a collection of several SCAN (Shipment Confirmation Acceptance Notice) forms, each with its EFN (Electronic File Number); the number of the SCAN forms depends on the induction point, destination entry and other aggregation factors.
+Manifesting can be performed explicitly (for one or all unmanifested mailpieces) via the manifesting API or by using the Blue website. International Bridge manifests "on behalf of the user" at the end of the day at 11:55PM PST based on the mailpiece's postmark date. For example, if a mailpiece is postmarked for 02/12/2020, it is automatically manifested on 02/11/2020 at 11:55PM PST (if it wasn't already manifested or refunded). The manifest response contains a collection of several SCAN (Shipment Confirmation Acceptance Notice) forms, each with its EFN (Electronic File Number); the number of the SCAN forms depends on the induction point, destination entry and other aggregation factors.
 
 ## Refunds
 
-Unmanifested mailpieces can be refunded immediately. For the already manifested mailpieces (whether explicitly or automatically end-of-day), refunds are approved after approximately 2 weeks, pending that the labels were never used (i.e. tracking events don't exist).
+You may explicitly request a refund for any USPS label within the 30-day period after it's creation. This is accomplished by the appropriate API call which includes the mailpiece tracking number. In addition to explicitly requested refunds, the International Bridge ePostage platform provides an Automatic Refunds service. This means that even if you forget to ask for refund directly, we will identify unused labels within 30 days of creation and submit the refund request on your behalf.
+
+Once a refund is initiated, it typically takes about two weeks for USPS to finalize the refund request. After this time, if label doesn’t have any physical scans, you will be refunded the full label price. If you are on the Meter billing type, your account balance will be increased by the refunded amount. If you are on Invoice, we will credit you in the upcoming Invoice.
+
+The refund notification (inlcuding the approved/rejected result) is done through a refunds report to your email address. This report is sent once a day for any requested refunds.
+
+<aside class="notice">
+Refunds are approved by the USPS. To qualify for a refund, the label must not be inducted into the USPS mailstream.
+</aside>
+
+## Adjustments
+
+As a USPS-certified ePostage partner, International Bridge charges the user for any mailpiece adjustments incurred during the delivery.
+
+Based on the information entered by the user when the label is created, and the data obtained by the sampling of mailpieces, USPS verifies if a shipper has paid the correct postage amount. If USPS detects any underpayment, they will deliver the package to the recipient and charge the shipper for the postage due.
+
+All label cost adjustments for the previous months are charged after 21st of current month. For Meter users the account balance will be decreased for the postage due. For Invoiced users, the adjustments will be charged on the next invoice.
+
+To notify you about the label cost adjustments, every 1st of the month we email you a monthly adjustments-report. The report includes the list and metadata for all mailpieces for which postage has been adjusted during the past month.
+
+<aside class="notice">
+Adjustments are detected and charged by the USPS. The best way to avoid this and ensure a carefree shipping experience is by entering correct mailpiece information when creating the label.
+</aside>
 
 ## Sandbox
 
